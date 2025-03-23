@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/0.IMGS/logo_pizza.png"> <!--Ícone do site-->
+    <title>Fatias&Sabores - Pizzaria</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menu com bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+          <!-- Logo -->
+          <a class="navbar-brand" href="index.html">
+            <img src="/0.IMGS/logo_pizza.png" class="img-fluid" alt="Logo" width="72px">
+            <b>Fatias &</b> Sabores
+          </a>
+          <!-- Toggle para mobile -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- Itens do Menu -->
+          <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+            <ul class="navbar-nav align-items-center">
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">Início</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#cardapio">Cardápio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="cadastro.html">Cadastre-se</a>
+              </li>
+              <li class="nav-item">
+                <button class="btn me-2" data-bs-toggle="modal" data-bs-target="#loginModal" style="border-radius: 30px; color: #FFFF; background-color: #FFA831;">
+                <img src="/0.IMGS/perfil.png" style="width: 24px; height: 24px;"> LOGIN</button>
+              </li>
+              <li class="nav-item">
+                <button class="btn m-1" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; width: auto;">
+                <span class="badge rounded-pill bg-light text-danger" title="0 produto(s) no carrinho"><small>0</small></span>
+                <img src="/0.IMGS/carrinho.png" style="width: 24px; height: 24px;"> CARRINHO</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <!--FIM DO MENU-->
+    <!-- Modal de Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="login.php" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                <label for="username" class="form-label">E-mail</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#">Esqueci minha senha</a>
+                <button type="submit" class="btn" style="border-radius: 30px; color: #FFFF; background-color: #FFA831;">Entrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 30px;">Fechar</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    <!-- FIM Modal de Login -->
+    
+    <!-- SEÇÃO 1: NOVO SABOR -->
+    <section>
+        <div id="Ing1" class="container" style="background: #FFA831 url(/0.IMGS/ingredientes.png) no-repeat left ; background-size: 60% auto; border-radius: 15px;">
+        <div class="row align-items-center new-pizza-card">
+            <div class="col-md-5">
+            <h1><b>DESTAQUE:</b></h1>
+            <h2>SABOROSA DE OZ: A pizza que tem o sabor da nossa cidade! 🍕🌆</h2>
+            <button class="btn m-1" data-bs-toggle="modal" data-bs-target="#NovaPizza" style="border-radius: 30px; color: #000000; background-color: #fafafa;">Ver mais 😋</button>
+            </div>
+            <div class="col-md-7">
+            <img src="/0.IMGS/Pizza_OZ.png" alt="Nova Pizza" class="img-fluid">
+            </div>
+        </div>
+        </div>
+    </section>   
+
+    <!-- Modal de novo sabor -->
+    <div class="modal fade" id="NovaPizza" tabindex="-1">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">SABOROSA DE OZ 🍕</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+            <p>Para os verdadeiros Osasquenses de coração, chegou a pizza que une tradição e ousadia! Com ingredientes frescos e combinações feitas sob medida para o seu paladar, cada fatia é uma viagem gastronômica pela essência de Osasco. Queijo derretido, toppings surpreendentes e um toque especial que só quem ama esta cidade entenderá. É mais que pizza: é orgulho em forma de massa! 🧀✨
+            </p>
+            <p>    
+            Venha provar a Saborosa de Oz e descubra por que Osasco tem um novo motivo para sorrir (e se deliciar)! 🔥</p>
+            </div>
+            <div class="modal-footer">
+            <p>
+            <h5>Faça login e peça já!</h5>
+            </p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- FIM Modal de novo sabor -->
+    <!-- FIM da SEÇÃO 1 -->
+
+    <!-- SEÇÃO 2: CARDÁPIO -->
+    <section id="cardapio" class="py-4">
+        <div class="container">
+            <h2 class="mb-4 text-center"><b>Cardápio</b></h2>
+            <div class="row">
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                    <img src="/0.IMGS/Pizza_Bauru.jpg" class="img-fluid" alt="Pizza Bauru">
+                    <p class="text-center">Bauru</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Calabresa.jpg" class="img-fluid" alt="Pizza Calabresa">
+                <p class="text-center">Calabresa</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_CheddarBacon.png" class="img-fluid" alt="Pizza Cheddar e Bacon">
+                <p class="text-center">Cheddar e Bacon</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_FrangoCaip.png" class="img-fluid" alt="Pizza Frango Caipira ">
+                <p class="text-center">Frango Caipira</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Margherita.jpg" class="img-fluid" alt="Pizza Marguerita">
+                <p class="text-center">Marguerita</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Queijo.jpg" class="img-fluid" alt="Pizza Mussarela">
+                <p class="text-center">Mussarela</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Napolitana.jpg" class="img-fluid" alt="Pizza Napolitana">
+                <p class="text-center">Napolitana</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Pepperoni.jpg" class="img-fluid" alt="Pizza Pepperoni">
+                <p class="text-center">Pepperoni</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Portuguesa.jpg" class="img-fluid" alt="Pizza Portuguesa">
+                <p class="text-center">Portuguesa</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_4Queijos.jpg" class="img-fluid" alt="Pizza Quatro Queijos">
+                <p class="text-center">Quatro Queijos</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_SaborosaOZ.jpg" class="img-fluid" alt="Pizza Saborosa de OZ">
+                <p class="text-center">Saborosa de OZ</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_3Queijos.jpg" class="img-fluid" alt="Pizza Três Queijos">
+                <p class="text-center">Três Queijos</p>
+            </div>
+            <div class="col-6 col-md-2 mb-4 pizza-item">
+                <img src="/0.IMGS/Pizza_Vegetariana.jpg" class="img-fluid" alt="Pizza Vegetariana">
+                <p class="text-center">Vegetariana</p>  
+            </div>
+            </div>
+    </section>
+    <!-- FIM da SEÇÃO 2 -->
+
+    <!-- SEÇÃO 3: APP -->
+    <section style="background: #FFA831;">
+        <div class="container py-2">
+            <div class="row align-items-center">
+              <div class="col-md-10 text-center">
+                <p style="font-size: x-large; color: #FFFF;">Baixe o app da <b style="color: #000000;">Fatias & Sabores</b> e acompanhe seu pedido na palma da mão!</p>
+                <div class="align-items-center">
+                  <a href="#"><img src="/0.IMGS/Googleplay.png" alt="Google Play" class="me-2" width="150"></a>
+                  <a href="#"><img src="/0.IMGS/Applestore.png" alt="App Store" width="150"></a>
+                </div>
+              </div>
+              <div class="col-md-2 align-items-center">
+                <img src="/0.IMGS/app_celular.webp" alt="App no Celular" class="img-fluid" width="160">
+              </div>
+            </div>
+          </div>
+    </section>
+    <!-- FIM da SEÇÃO 3 -->
+
+    <!-- SEÇÃO 4: VAZIO --> 
+     <p></p>
+     <p></p>
+    <!-- FIM da SEÇÃO 4 -->
+
+    <!-- RODAPÉ -->
+    <footer class="py-3" style="background: #FFA831 url(/0.IMGS/ingredientes.png) repeat; background-size: 28% auto;">
+        <div class="container">
+        <div class="row">
+            <div class="col-md-3 text-center">
+            <h5>Dúvidas? Entre em contato:</h5>
+            <p><img src="/0.IMGS/Social_Direct.png" width="35" height="35"> fatiasesabores@pizzaria.com</p>
+            <p><img src="/0.IMGS/Social_Whats.png" width="35" height="35"> (11) 91234-5678</p>
+            </div>
+            <div class="col-md-4 text-center">
+            <h5>Localização:</h5>
+            <p><img src="/0.IMGS/local.png" width="30" height="30">Rua das Pizzas Saborosas, 123<br>Osasco, São Paulo</p>
+            </div>
+            <div class="col-md-3 text-center">
+            <h5>Redes Sociais</h5>
+            <p>
+            <a href="#"><img src="/0.IMGS/Social_Facebook.png" width="45" height="45"></a>
+            <a href="#"><img src="/0.IMGS/Social_Insta.png" width="45" height="45"></a>
+            <a href="#"><img src="/0.IMGS/Social_X.png" width="45" height="45"></a>
+            </p>
+            </div>
+            <div class="col-md-2 py-3 text-center">
+            <p><a href="#"><img src="/0.IMGS/seta.png" width="90" height="90"></a></p>
+            </div>
+        </div>
+    </footer>
+    <!-- FIM do RODAPÉ -->
+
+    <!-- JavaScript próprio -->
+    <script src="/3.JS/scripts.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
