@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/img/logo_pizza.png"> <!--Ícone do site-->
+    <title>Fatias&Sabores - Carrinho</title>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Fonte personalizada via google fonts (Poppins)-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Menu com bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" href="index.html">
+          <img src="/img/logo_pizza.png" class="img-fluid" alt="Logo" width="72px">
+          <b>Fatias &</b> Sabores
+        </a>
+        <!-- Toggle para mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Itens do Menu -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Início</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="cardapio.html">Cardápio</a>
+            </li>
+            <li class="nav-item" id="menu-cadastro">
+              <a class="nav-link" href="cadastro.html">Cadastre-se</a>
+            </li>
+            <li class="nav-item" id="menu-login">
+              <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831;">
+              <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN</a>
+            </li>
+            <li class="nav-item">
+              <a href="carrinho.html" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; width: auto;">
+              <img src="/img/carrinho.png" style="width: 24px; height: 24px;">CARRINHO</a>
+            </li>
+            <li class="nav-item" id="menu-adm">
+            </li>
+          </ul>
+        </div>
+      </div>
+  </nav>
+  <!--FIM DO MENU-->
+
+    <main class="flex-grow-1">
+    <!-- SEÇÃO 1 -->
+    <section>
+      <!-- Cabeçalho do carrinho -->
+      <div class="d-flex align-items-center justify-content-center mb-3" style="background: #FFA831; color: #ffffff;">
+        <img src="/img/cart.png" class="img-fluid" style="max-height: 40px;"> 
+        <h2 class="m-0 ms-2 mb-2"><b>Meu carrinho</b></h2>
+      </div>
+    
+      <!-- Container centralizado -->
+      <div class="container">
+        <div class="row justify-content-center">
+          <!-- Coluna que contém os itens do carrinho -->
+          <div class="col-12 col-lg-6">
+    
+            <!-- ITEM 1 -->
+            <div class="card mb-3">
+              <div class="row justify-content-between align-items-center g-0">
+                <div class="col-5">
+                  <img src="/img/Pizza_SabOZ.png" class="img-fluid" alt="Pizza" style="object-fit: cover; max-width: 150px;">
+                </div>
+                <div class="col-5">
+                  <div class="card-body p-2">
+                    <h4 class="mb-1"><b>Saborosa de OZ</b></h4>
+                    <h5 class="text-danger mb-2">R$ 56,99 (unidade)</h5>
+                    <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                      <button class="btn btn-sm btn-minus">-</button>
+                      <span class="quantity px-2">1</span>
+                      <button class="btn btn-sm btn-plus">+</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <a href="#" class="btn" style="border-radius: 30px; background-color: #FFEACE; border: 1px solid #FFA831;">
+                    <img src="/img/lixeira.png" class="img-fluid" alt="Excluir">
+                  </a>
+                </div>
+              </div>
+            </div>
+    
+            <!-- ITEM 2 -->
+            <div class="card mb-3">
+              <div class="row justify-content-between align-items-center g-0">
+                <div class="col-5">
+                  <img src="/img/Pizza_Bauru.png" class="img-fluid" alt="Pizza" style="object-fit: cover; max-width: 150px;">
+                </div>
+                <div class="col-5">
+                  <div class="card-body p-2">
+                    <h4 class="mb-1"><b>Bauru</b></h4>
+                    <h5 class="text-danger mb-2">R$ 45,33 (unidade)</h5>
+                    <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                      <button class="btn btn-sm btn-minus">-</button>
+                      <span class="quantity px-2">1</span>
+                      <button class="btn btn-sm btn-plus">+</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <a href="#" class="btn" style="border-radius: 30px; background-color: #FFEACE; border: 1px solid #FFA831;">
+                    <img src="/img/lixeira.png" class="img-fluid" alt="Excluir">
+                  </a>
+                </div>
+              </div>
+            </div>
+    
+            <!-- ITEM 3 -->
+            <div class="card mb-3">
+              <div class="row justify-content-between align-items-center g-0">
+                <div class="col-5">
+                  <img src="/img/CocaCola_2l.png" class="img-fluid" alt="Bebida" style="object-fit: cover; max-width: 150px;">
+                </div>
+                <div class="col-5">
+                  <div class="card-body p-2">
+                    <h4 class="mb-1"><b>Coca Cola 2L</b></h4>
+                    <h5 class="text-danger mb-2">R$ 20,55 (unidade)</h5>
+                    <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                      <button class="btn btn-sm btn-minus">-</button>
+                      <span class="quantity px-2">1</span>
+                      <button class="btn btn-sm btn-plus">+</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <a href="#" class="btn" style="border-radius: 30px; background-color: #FFEACE; border: 1px solid #FFA831;">
+                    <img src="/img/lixeira.png" class="img-fluid" alt="Excluir">
+                  </a>
+                </div>
+              </div>
+            </div>
+    
+            <!-- TOTAL DO CARRINHO -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="row justify-content-between align-items-center">
+                  <div class="col-9">
+                    <h4>Valor do frete:</h4>
+                  </div>
+                  <div class="col-3">
+                    <h4 class="text-success">Grátis!</h4>
+                  </div>
+                </div>
+                <div class="row justify-content-between align-items-center">
+                  <div class="col-9">
+                    <h4>Total do pedido:</h4>
+                  </div>
+                  <div class="col-3">
+                    <h4 class="text-danger">R$ 122,87</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <!-- MÉTODO DE PAGAMENTO -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="text-center mb-3">
+                  <h5 style="color: #FFA831;"><b>Falta pouco para se deliciar com nossos sabores!</b></h5>
+                  <h1>Método de pagamento:</h1>
+                </div>
+                <div class="row text-center">
+                  <div class="col-4">
+                    <input type="radio" id="dinheiro" name="pagamento" value="dinheiro">
+                    <label for="dinheiro">Dinheiro</label>
+                  </div>
+                  <div class="col-4">
+                    <input type="radio" id="cartao" name="pagamento" value="cartao">
+                    <label for="cartao">Cartão</label>
+                  </div>
+                  <div class="col-4">
+                    <input type="radio" id="pix" name="pagamento" value="pix">
+                    <label for="pix">PIX</label>
+                  </div>
+                </div>
+                <div class="mt-3 d-flex align-items-center">
+                  <label for="troco">Troco para quanto?</label>
+                  <input type="number" id="troco" name="troco" min="0" step="0.01" class="form-control text-center" style="max-width: 200px; margin: auto; border-radius: 30px; border-style: solid; border-color: #000000;">
+                </div>
+                <div class="text-center mt-4">
+                  <a href="pedidoconfirmado.html" class="btn" style="border-radius: 30px; color: #fff; background-color: #FFA831;">
+                    <b>Confirmar meu pedido</b>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div> <!-- Fim col-12 col-lg-6 -->
+        </div> <!-- Fim row -->
+      </div> <!-- Fim container -->
+    </section> 
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="py-3 mt-auto" style="background: #FFA831; color: #FFFF">
+      <div class="container">
+      <div class="row">
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Dúvidas? Entre em contato:</b>
+          <p class="m-0"><img src="/img/Social_Direct.png" width="30" height="30"> fatiasesabores@pizzaria.com</p>
+          <p class="m-0"><img src="/img/Social_Whats.png" width="30" height="30"> (11) 91234-5678</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Localização:</b>
+          <p><img src="/img/local.png" width="30" height="30">Rua das Pizzas Saborosas, 123<br>Osasco, São Paulo</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Nossas redes sociais:</b>
+          <p>
+          <a href="https://www.facebook.com/"><img src="/img/Social_Facebook.png" width="65" height="65"></a>
+          <a href="https://www.instagram.com/"><img src="/img/Social_Insta.png" width="65" height="65"></a>
+          <a href="https://x.com/"><img src="/img/Social_X.png" width="65" height="65"></a>
+          </p>
+          <p>Siga-nos e compartilhe a felicidade em formato de pizza!</p>
+          </div>
+      </div>
+  </footer>
+  <!-- FIM do RODAPÉ -->
+
+  <!-- JavaScript próprio -->
+  <script src="/javascript/scripts.js"></script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

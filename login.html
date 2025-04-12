@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/img/logo_pizza.png"> <!--Ícone do site-->
+    <title>Fatias&Sabores - Login</title>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Fonte personalizada via google fonts (Poppins)-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <!-- Menu com Bootstrap -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+      <!-- Logo -->
+      <a class="navbar-brand" href="index.html">
+        <img src="/img/logo_pizza.png" class="img-fluid" alt="Logo" width="72px">
+        <b>Fatias &</b> Sabores
+      </a>
+      <!-- Toggle para mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Itens do Menu -->
+      <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+          <li class="nav-item"><a class="nav-link" href="cardapio.html">Cardápio</a></li>
+          <li class="nav-item" id="menu-cadastro">
+            <a class="nav-link" href="cadastro.html">Cadastre-se</a>
+          </li>
+          <li class="nav-item" id="menu-fav"></li>
+          <li class="nav-item" id="menu-login">
+            <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831;">
+              <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="carrinho.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831; width: auto;">
+              <img src="/img/carrinho.png" style="width: 24px; height: 24px;"> CARRINHO
+            </a>
+          </li>
+          <li class="nav-item" id="menu-adm"></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- FIM DO MENU -->
+
+    <!-- Página de LOGIN -->
+    <main class="flex-grow-1">
+      <section>
+        <div class="d-flex align-items-center justify-content-center" style="color: #FFA831; height: 100px; font-size: x-large;">
+        <p class="col-mb-6 text-center"><b>A felicidade começa com uma fatia: descubra o sabor que conquista a cada mordida!</b></p>   
+        </div>
+        <div class="d-flex align-items-center justify-content-center" style="background: #FFA831; color: #ffffff; height: 100px;">
+          <h1 class="m-0 mt-1"><b>LOGIN</b></h1>
+        </div>
+        <div class="d-flex align-items-center justify-content-center" style="height: 80px; font-size: large;">
+            <p class="col-mb-4 text-center">Realize seu login para prosseguir com seu pedido.</p>   
+        </div>
+      </section>
+      <section>
+          <div class="container-fluid d-flex justify-content-center align-items-center">
+            <form class="p-4 col-10 col-md-5" onsubmit="event.preventDefault(); autenticar();">
+              <!-- E-mail -->
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control rounded-pill" id="email" placeholder="E-mail" required>
+                <label for="email">E-mail</label>
+              </div>
+      
+              <!-- Senha -->
+              <div class="form-floating mb-3 position-relative">
+                <input type="password" class="form-control rounded-pill" id="senha" placeholder="Senha" required>
+                <label for="senha">Senha</label>
+                <!-- Botão para mostrar/ocultar senha -->
+                <button type="button" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2" onclick="toggleSenha('senha')">
+                  <span id="iconeSenha" class="bi bi-eye"></span>
+                </button>
+              </div>
+
+              <!-- Esqueci a senha -->
+              <div class="mb-3 d-flex justify-content-end align-items-center">
+                <a href="recsenha.html" style="color: #FFA831;"><b>Esqueceu a senha?</b></a>
+              </div>
+            <p id="mensagem"></p>
+            <!-- Botão de login-->
+            <div class="col-12 mt-2 mb-1 text-center">
+              <button onclick="autenticar()" class="btn btn-dark font-weight-bold rounded-pill px-4" style="background-color: #FFA831; border: none;"><b>ENTRAR</b></button>
+            </div>
+            <div class="col-12 mb-1 text-center">
+              <p>Não possui cadastro? <a href="/cadastro.html" style="text-decoration: none; color: #FFA831;">Cadastre-se agora!</a></p>
+            </div>
+          </div>
+      </section>
+
+    <!-- SEÇÃO 3: APP -->
+    <section style="background: #FFA831;">
+        <div class="container text-center py-2">
+            <div class="row align-items-center">
+              <div class="col-md-10 text-center">
+                <p style="font-size: x-large; color: #FFFF;">Baixe o app da <b style="color: #000000;">Fatias & Sabores</b> e acompanhe seu pedido na palma da mão!</p>
+                <div class="align-items-center">
+                  <a href="#"><img src="/img/Googleplay.png" alt="Google Play" class="me-2" width="150"></a>
+                  <a href="#"><img src="/img/Applestore.png" alt="App Store" width="150"></a>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <img src="/img/app_celular.webp" alt="App no Celular" class="img-fluid" width="160">
+              </div>
+            </div>
+          </div>
+          <div>
+            <p></p>
+            <p></p>
+          </div>
+    </section>
+    <!-- FIM da SEÇÃO 3 -->
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="py-3 mt-auto" style="background: #FFA831; color: #FFFF">
+      <div class="container">
+      <div class="row">
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Dúvidas? Entre em contato:</b>
+          <p class="m-0"><img src="/img/Social_Direct.png" width="30" height="30"> fatiasesabores@pizzaria.com</p>
+          <p class="m-0"><img src="/img/Social_Whats.png" width="30" height="30"> (11) 91234-5678</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Localização:</b>
+          <p><img src="/img/local.png" width="30" height="30">Rua das Pizzas Saborosas, 123<br>Osasco, São Paulo</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Nossas redes sociais:</b>
+          <p>
+          <a href="https://www.facebook.com/"><img src="/img/Social_Facebook.png" width="65" height="65"></a>
+          <a href="https://www.instagram.com/"><img src="/img/Social_Insta.png" width="65" height="65"></a>
+          <a href="https://x.com/"><img src="/img/Social_X.png" width="65" height="65"></a>
+          </p>
+          <p>Siga-nos e compartilhe a felicidade em formato de pizza!</p>
+          </div>
+      </div>
+  </footer>
+  <!-- FIM do RODAPÉ -->
+
+  <!-- JavaScript próprio -->
+  <script src="/javascript/scripts.js"></script>
+  <script src="/javascript/cadastro.js"></script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <!-- Ícones do Bootstrap (para o ícone do olho) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</body>
+</html>
+

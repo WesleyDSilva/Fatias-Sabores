@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/img/logo_pizza.png"> <!--Ícone do site-->
+    <title>Fatias&Sabores - Cardápio</title>
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Fonte personalizada via google fonts (Poppins)-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Menu com bootstrap -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand" href="index.html">
+          <img src="/img/logo_pizza.png" class="img-fluid" alt="Logo" width="72px">
+          <b>Fatias &</b> Sabores
+        </a>
+        <!-- Toggle para mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Itens do Menu -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Início</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="cardapio.html">Cardápio</a>
+            </li>
+            <li class="nav-item" id="menu-cadastro">
+              <a class="nav-link" href="cadastro.html">Cadastre-se</a>
+            </li>
+            <li class="nav-item" id="menu-login">
+              <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831;">
+              <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN</a>
+            </li>
+            <li class="nav-item">
+              <a href="carrinho.html" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; width: auto;">
+              <img src="/img/carrinho.png" style="width: 24px; height: 24px;">CARRINHO</a>
+            </li>
+            <li class="nav-item" id="menu-adm">
+            </li>
+          </ul>
+        </div>
+      </div>
+  </nav>
+  <!--FIM DO MENU-->
+
+    <main class="flex-grow-1">
+    <!-- SEÇÃO 1 -->
+    <section>
+        <section>
+            <div class="d-flex align-items-center justify-content-center mb-3" style="background: #FFA831; color: #ffffff;">
+            <h2 class="m-0 mb-2"><b>Cardápio de Pizzas</b></h2>
+            </div> 
+            </div>
+        </section>
+    <div class="container">
+        <!-- Seção Pizzas -->
+        <div class="row">
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Bauru.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Bauru">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Bauru</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Presunto cozido fatiado, Tomate em rodelas e Orégano.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Calabresa.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Calabresa">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Calabresa</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Linguiça calabresa fatiada e Cebola em rodelas.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+    
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Marguerita.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Marguerita">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Marguerita</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Tomate em rodelas, Folhas de manjericão fresco e Azeite de oliva.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Mussarela.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Mussarela">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Mussarela</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela em abundância, Orégano, Azeitonas pretas e Gotas de Azeite de oliva.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Peppe.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Pepperoni">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Pepperoni</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela em abundância e Pepperoni (salame apimentado) fatiado.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_4queijos.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Quatro Queijos">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Quatro Queijos</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Gorgonzola, Provolone e Parmesão ralado.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_Veget.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Vegetariana">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Vegetariana</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Champignon, Pimentão verde, vermelho e amarelo, Tomate em rodelas, Cebola roxa  e Azeitonas pretas.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 mb-4">
+        <div class="card align-items-center">
+        <img src="/img/Pizza_SabOZ.png" class="card-img-top" style="max-width: 200px;" alt="Pizza Saborosa de OZ">
+        <div class="card-body">
+        <h5 class="card-title text-center" style="color: #FFA831;"><b>Saborosa de OZ</b></h5>
+        <p class="card-text">Molho de tomate, Mussarela, Champignon, Pimentão verde, Tomate cereja, Manjericão  e Azeitonas pretas.</p>
+        <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group rounded-pill" style="background: #FFEACE;">
+        <button class="btn btn-sm btn-minus">-</button>
+        <span class="quantity px-2">0</span>
+        <button class="btn btn-sm btn-plus">+</button>
+        </div>
+        <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+    </section>   
+    <!-- Seção bebidas -->
+    <section>
+        <section>
+            <div class="d-flex align-items-center justify-content-center mb-3" style="background: #FFA831; color: #ffffff;">
+              <h2 class="m-0 mb-2"><b>Opções de bebidas</b></h2>
+            </div> 
+            </div>
+          </section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/CocaCola_2l.png" class="card-img-top" style="max-width: 200px;" alt="Coca Cola 2L">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Coca Cola 2L</b></h5>
+                <p class="card-text">A clássica Coca Cola sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/CocaCola_600ml.png" class="card-img-top" style="max-width: 200px;" alt="Coca Cola 600ml">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Coca Cola 600ml</b></h5>
+                <p class="card-text">A clássica Coca Cola sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/CocaCola_350ml.png" class="card-img-top" style="max-width: 200px;" alt="Coca Cola 350ml">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Coca Cola 350ml</b></h5>
+                <p class="card-text">A clássica Coca Cola sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/Pepsi_2l.png" class="card-img-top" style="max-width: 200px;" alt="Pepsi 2L">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Pepsi 2L</b></h5>
+                <p class="card-text">A clássica Pepsi sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+    
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/Pepsi_600ml.png" class="card-img-top" style="max-width: 200px;" alt="Pepsi 600ml">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Pepsi 600ml</b></h5>
+                <p class="card-text">A clássica Pepsi sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4 mb-4">
+                <div class="card align-items-center">
+                <img src="/img/Pepsi_350ml.png" class="card-img-top" style="max-width: 200px;" alt="Pepsi 350ml">
+                <div class="card-body">
+                <h5 class="card-title text-center" style="color: #FFA831;"><b>Pepsi 350ml</b></h5>
+                <p class="card-text">A clássica Pepsi sabor original e geladinha.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group rounded-pill" style="background: #FFEACE;">
+                <button class="btn btn-sm btn-minus">-</button>
+                <span class="quantity px-2">0</span>
+                <button class="btn btn-sm btn-plus">+</button>
+                </div>
+                <button class="btn btn-dark rounded-pill" style="background-color: #FFA831; border: none;">Adicionar ao carrinho</button>
+                </div>
+                </div>
+                </div>
+                </div>
+
+            </div>
+        </div>
+</section>   
+
+
+    <!-- SEÇÃO 3: APP -->
+    <section style="background: #FFA831;">
+        <div class="container text-center py-2">
+            <div class="row align-items-center">
+              <div class="col-md-10 text-center">
+                <p style="font-size: x-large; color: #FFFF;">Baixe o app da <b style="color: #000000;">Fatias & Sabores</b> e acompanhe seu pedido na palma da mão!</p>
+                <div class="align-items-center">
+                  <a href="#"><img src="/img/Googleplay.png" alt="Google Play" class="me-2" width="150"></a>
+                  <a href="#"><img src="/img/Applestore.png" alt="App Store" width="150"></a>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <img src="/img/app_celular.webp" alt="App no Celular" class="img-fluid" width="160">
+              </div>
+            </div>
+          </div>
+          <div>
+            <p></p>
+            <p></p>
+          </div>
+    </section>
+    <!-- FIM da SEÇÃO 3 -->
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="py-3 mt-auto" style="background: #FFA831; color: #FFFF">
+      <div class="container">
+      <div class="row">
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Dúvidas? Entre em contato:</b>
+          <p class="m-0"><img src="/img/Social_Direct.png" width="30" height="30"> fatiasesabores@pizzaria.com</p>
+          <p class="m-0"><img src="/img/Social_Whats.png" width="30" height="30"> (11) 91234-5678</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Localização:</b>
+          <p><img src="/img/local.png" width="30" height="30">Rua das Pizzas Saborosas, 123<br>Osasco, São Paulo</p>
+          </div>
+          <div class="col-md-4 text-center">
+          <b style="font-size: x-large">Nossas redes sociais:</b>
+          <p>
+          <a href="https://www.facebook.com/"><img src="/img/Social_Facebook.png" width="65" height="65"></a>
+          <a href="https://www.instagram.com/"><img src="/img/Social_Insta.png" width="65" height="65"></a>
+          <a href="https://x.com/"><img src="/img/Social_X.png" width="65" height="65"></a>
+          </p>
+          <p>Siga-nos e compartilhe a felicidade em formato de pizza!</p>
+          </div>
+      </div>
+  </footer>
+  <!-- FIM do RODAPÉ -->
+
+  <!-- JavaScript próprio -->
+  <script src="/javascript/scripts.js"></script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
