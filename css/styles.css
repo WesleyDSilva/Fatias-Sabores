@@ -2,23 +2,38 @@
 
 /* Estilos Globais */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif !important;
-  }
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif !important;
+  background-color: #f4f7f6; /* Um fundo suave para a página toda */
+  color: #333;
+}
 
 /* Seção de promoção */
+.promo-section,
+.flip-section,
+.contato-section {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 20px auto; /* Centraliza seções e adiciona margem */
+  background-color: #fff; /* Fundo branco para seções */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
 
 .promo-title {
-  color: #FFA831;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  color: #ffa831;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-size: 2.5rem;
+  text-align: center; /* Centralizar título da promoção */
+  margin-bottom: 0.5rem;
 }
 
 .promo-subtitle {
-  color: #000000;
+  color: #555; /* Cor mais suave para subtítulo */
   font-size: 1.1rem;
   margin-bottom: 2rem;
+  text-align: center; /* Centralizar subtítulo da promoção */
 }
 
 .promo-card {
@@ -26,37 +41,56 @@ body {
   overflow: hidden;
   border-radius: 20px;
   transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada */
+  max-width: 800px; /* Limitar largura do card de promo */
+  margin: 0 auto; /* Centralizar card de promo */
 }
 
 .promo-img {
   width: 100%;
   max-height: 350px;
   object-fit: cover;
-  border-radius: 25px;
-  border: 4px solid #FFA831;
+  border-radius: 20px; /* Menos arredondado que o card para não cortar */
+  border: 4px solid #ffa831;
   transition: all 0.3s ease;
+  display: block; /* Remove espaço extra abaixo da imagem */
 }
 
 .promo-card:hover .promo-img {
   border: 4px solid #ff5e00;
+  transform: scale(1.03); /* Efeito de zoom sutil */
 }
 
 /* Titulo seção história */
 #titsec2 {
-  background: #FFA831; 
+  background: #ffa831;
   border-radius: 20px;
-  color: #FFFF;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  color: #ffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   font-size: 2rem;
   text-align: center;
+  padding: 15px 20px; /* Adicionar padding */
+  margin: 40px auto; /* Espaçamento e centralização */
+  max-width: 600px; /* Largura máxima para o título */
 }
 
 /* Flip Cards Personalizados */
+.flip-cards-container {
+  /* Container para os flip cards para layout */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
 .flip-card {
   perspective: 1000px;
   height: 350px;
   border-radius: 15px;
   overflow: hidden;
+  flex: 1 1 300px; /* Flexbox para responsividade */
+  max-width: 350px; /* Máximo para não esticar demais */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .flip-card-inner {
@@ -71,7 +105,17 @@ body {
   transform: rotateY(180deg);
 }
 
-.flip-card-front, .flip-card-back {
+/* Se o JavaScript controlar o flip no mobile, podemos remover o :hover para mobile
+  ou ajustar a lógica do JS para não interferir com o :hover em desktop */
+@media (hover: hover) and (pointer: fine) {
+  /* Aplica hover apenas em dispositivos com mouse */
+  .flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+}
+
+.flip-card-front,
+.flip-card-back {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -81,13 +125,15 @@ body {
   justify-content: center;
   text-align: center;
   padding: 20px;
+  box-sizing: border-box; /* Inclui padding na dimensão */
 }
 
 .flip-card-front {
-  background-color: #FFA831;
+  background-color: #ffa831;
   background-size: cover;
   background-position: center;
   color: white;
+  border-radius: 15px; /* Para casar com o card */
 }
 
 .flip-card-front .overlay {
@@ -99,47 +145,145 @@ body {
 .flip-card-back {
   background-color: #fff5e6;
   transform: rotateY(180deg);
-  border: 3px solid #FFA831;
-  border-radius: 10%;
+  border: 3px solid #ffa831;
+  border-radius: 15px; /* Para casar com o card */
   flex-direction: column;
 }
 
 /* Ajustes de Texto */
 .flip-card-back h4 {
-  color: #FFA831;
+  color: #ffa831;
   font-size: 1.3rem;
   margin-bottom: 10px;
 }
 
 .flip-card-back p {
   font-size: 0.9rem;
+  color: #333; /* Melhorar contraste */
+}
+
+/* Estilos para a Seção de Contato e Formulário */
+.contato-section {
+  /* padding e margin já definidos em .promo-section etc. */
+}
+
+.contato-container {
+  max-width: 700px; /* Limitar largura do container do formulário */
+  margin: 0 auto; /* Centralizar o container */
+  padding: 20px;
+  background-color: #ffffff; /* Fundo branco para o formulário */
+  border-radius: 10px; /* Bordas arredondadas */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.contato-form .form-group {
+  margin-bottom: 1.5rem; /* Espaçamento entre os grupos de formulário */
+}
+
+.contato-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 600; /* Deixar label um pouco mais forte */
+}
+
+.contato-form input[type="text"],
+.contato-form input[type="email"],
+.contato-form input[type="password"],
+.contato-form input[type="tel"], /* Adicionado para o CEP */
+.contato-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-sizing: border-box; /* Garante que padding não aumente o tamanho total */
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.contato-form input[type="text"]:focus,
+.contato-form input[type="email"]:focus,
+.contato-form input[type="password"]:focus,
+.contato-form input[type="tel"]:focus,
+.contato-form textarea:focus {
+  border-color: #ffa831; /* Destaque no foco */
+  outline: none; /* Remove outline padrão do browser */
+}
+
+.contato-form textarea {
+  resize: vertical; /* Permite redimensionamento vertical */
+}
+
+.contato-form .form-button {
+  background-color: #ffa831;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  display: block; /* Para centralizar com margin auto */
+  width: 100%; /* Ocupar toda a largura */
+  max-width: 250px; /* Largura máxima para o botão */
+  margin: 1rem auto 0; /* Centralizar o botão */
+}
+
+.contato-form .form-button:hover {
+  background-color: #e08e1c; /* Cor mais escura no hover */
 }
 
 /* Ajuste geral para mobile */
 @media (max-width: 767px) {
+  .promo-title {
+    font-size: 2rem;
+  }
+  .promo-subtitle {
+    font-size: 1rem;
+  }
+  #titsec2 {
+    font-size: 1.6rem;
+  }
+
   .flip-card {
-      height: auto; /* Altura automática */
-      min-height: 300px; /* Altura mínima para garantir interatividade */
-      margin-bottom: 20px;
+    height: auto; /* Altura automática */
+    min-height: 300px; /* Altura mínima para garantir interatividade */
+    margin-bottom: 20px;
+    flex-basis: 100%; /* Ocupar toda a largura */
   }
 
   .flip-card-inner {
-      height: 300px; /* Fixa altura para mobile */
+    min-height: 300px; /* Garante que o conteúdo caiba */
   }
 
   .flip-card-front h5 {
-      font-size: 1.2rem; /* Reduz tamanho do título */
+    font-size: 1.2rem; /* Reduz tamanho do título */
   }
 
   .flip-card-back {
-      padding: 15px !important;
+    padding: 15px !important;
   }
 
   .flip-card-back h4 {
-      font-size: 1.1rem;
+    font-size: 1.1rem;
   }
 
   .flip-card-back p {
-      font-size: 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .contato-form input[type="text"],
+  .contato-form input[type="email"],
+  .contato-form input[type="password"],
+  .contato-form input[type="tel"],
+  .contato-form textarea {
+    font-size: 0.9rem; /* Reduzir um pouco para mobile */
+  }
+
+  .contato-form .form-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 }
