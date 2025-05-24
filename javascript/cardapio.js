@@ -1,449 +1,514 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const apiUrl = "https://devweb3.ok.etc.br/api_mobile/api_get_produtos.php";
-  const categoryFilterSelect = document.getElementById(
-    "category-filter-select"
-  );
-  const cartCountElement = document.getElementById("cart-count");
+document.addEventListener("DOMContentLoaded", async () => {
+  // CORREÇÃO DAS URLs
+  const urlGet = "https://devweb3.ok.etc.br/api_mobile/api_get_produtos.php";
+  const urlPost =
+    "https://devweb3.ok.etc.br/api_mobile/api_registrar_item_pedido.php";
 
-  // Mapeamento de categorias para containers e títulos de seção
-  // As chaves devem ser o nome da categoria da API (convertido para minúsculas)
-  const categoryContainersMap = {
-    pizza: { containerId: "pizzas-container", sectionId: "pizzas-section" },
-    hambúrguer: {
-      containerId: "hamburguer-container",
-      sectionId: "hamburguer-section",
-    }, // Categoria da API é "Hambúrguer"
-    bebida: { containerId: "bebidas-container", sectionId: "bebidas-section" },
-    suco: { containerId: "bebidas-container", sectionId: "bebidas-section" },
-    refrigerante: {
-      containerId: "bebidas-container",
-      sectionId: "bebidas-section",
-    },
-    cerveja: { containerId: "bebidas-container", sectionId: "bebidas-section" },
-    sobremesa: {
-      containerId: "sobremesa-container",
-      sectionId: "sobremesa-section",
-    }, // Categoria da API é "Sobremesa"
-  };
+  const pizzasContainer = document.getElementById("pizzas-container");
+  const hamburguerContainer = document.getElementById("hamburguer-container");
+  const bebidasContainer = document.getElementById("bebidas-container");
+  const sobremesaContainer = document.getElementById("sobremesa-container");
+  const categoryFilter = document.getElementById("category-filter-select");
+  const cartCountElement = document.getElementById("cart-count"); // Para o contador do carrinho
 
-  let allProductsData = [];
-
-  function formatPrice(price) {
-    const number = parseFloat(price);
-    return isNaN(number) ? "N/D" : number.toFixed(2).replace(".", ",");
+  // Função para obter o ID do cliente (adapte conforme sua autenticação)
+  function getClienteId() {
+    const usuarioString = localStorage.getItem("usuario");
+    if (usuarioString) {
+      try {
+        const usuario = JSON.parse(usuarioString);
+        if (
+          usuario &&
+          typeof usuario.id !== "undefined" &&
+          !isNaN(parseInt(usuario.id))
+        ) {
+          return parseInt(usuario.id);
+        }
+      } catch (e) {
+        console.error("Erro ao parsear 'usuario' do localStorage:", e);
+      }
+    }
+    console.warn(
+      "getClienteId: Nenhum usuário logado encontrado ou ID inválido."
+    );
+    return null;
   }
 
-  function cleanSizeName(sizeName) {
-    return sizeName.replace(/Pizza |Fatia /gi, "").trim();
+  // Função para atualizar contador do carrinho (placeholder, idealmente buscaria da API)
+  function updateCartCount() {
+    // Para um contador real, você chamaria uma API para buscar os itens do pedido do cliente_id
+    // Por agora, vamos apenas simular ou deixar em 0 se não houver lógica local.
+    if (cartCountElement) {
+      // Exemplo: se você tivesse uma API para buscar o total de itens no carrinho
+      // const clienteId = getClienteId();
+      // if (clienteId) {
+      //   fetch(`/api/get_cart_total.php?cliente_id=${clienteId}`)
+      //     .then(res => res.json())
+      //     .then(data => {
+      //       cartCountElement.textContent = data.totalItems || 0;
+      //     })
+      //     .catch(() => cartCountElement.textContent = '0');
+      // } else {
+      //   cartCountElement.textContent = '0';
+      // }
+      cartCountElement.textContent = "0"; // Placeholder
+    }
   }
 
-  function renderProducts(productsToRender) {
-    Object.values(categoryContainersMap).forEach((mapInfo) => {
-      const container = document.getElementById(mapInfo.containerId);
-      if (container) container.innerHTML = "";
+  try {
+    const response = await fetch(urlGet);
+    if (!response.ok) {
+      // Se a resposta não for OK (ex: 404, 500), tenta ler como texto para ver a mensagem de erro
+      const errorText = await response.text();
+      throw new Error(`Erro HTTP ${response.status}: ${errorText}`);
+    }
+    const produtos = await response.json();
+
+    // Popula o filtro de categorias
+    const categorias = new Set(
+      produtos.map((p) => p.categoria).filter(Boolean) // Filtra nulos/undefined
+    );
+    // Limpa opções antigas do filtro, exceto a primeira ("Todas as Categorias")
+    while (categoryFilter.options.length > 1) {
+      categoryFilter.remove(1);
+    }
+    categorias.forEach((categoria) => {
+      const option = document.createElement("option");
+      option.value = categoria; // Usar o nome original da categoria para o valor do filtro
+      option.textContent = categoria;
+      categoryFilter.appendChild(option);
     });
 
-    if (!productsToRender || productsToRender.length === 0) {
-      // Poderia adicionar uma mensagem "Nenhum produto encontrado para esta categoria"
-      // nos containers visíveis se productsToRender estiver vazio após um filtro.
-      return;
-    }
+    function criarCard(produto) {
+      const imagem =
+        produto.caminho &&
+        produto.caminho.toLowerCase() !== "undefined" &&
+        produto.caminho.trim() !== ""
+          ? produto.caminho
+          : "img/padrao.jpg"; // Imagem padrão
 
-    productsToRender.forEach((item) => {
-      const categoriaLower = item.categoria.toLowerCase();
-      const mapInfo = categoryContainersMap[categoriaLower]; // Chave do map é a categoria da API em minúsculas
+      const card = document.createElement("div");
+      card.className = "col-md-4 mb-4"; // Bootstrap column
 
-      const productContainer = mapInfo
-        ? document.getElementById(mapInfo.containerId)
-        : null;
+      // Lógica para criar o select de opções (tamanho/tipo)
+      const sizeOptions = [];
+      const categoriaLowerCard = produto.categoria?.toLowerCase() || "";
 
-      if (!productContainer) {
-        console.warn(
-          `Container para categoria '${item.categoria}' (lower: ${categoriaLower}) não encontrado no map. Produto '${item.nome}' não será renderizado.`
-        );
-        return;
+      if (categoriaLowerCard === "pizza") {
+        if (produto.pequena && parseFloat(produto.pequena) > 0)
+          sizeOptions.push({
+            displayText: `Pequena (Fatia) - R$ ${parseFloat(
+              produto.pequena
+            ).toFixed(2)}`,
+            price: produto.pequena,
+            tamanhoApi: "pequena",
+            tipoApi: "meia",
+          });
+        if (produto.media && parseFloat(produto.media) > 0)
+          sizeOptions.push({
+            displayText: `Média (Fatia) - R$ ${parseFloat(
+              produto.media
+            ).toFixed(2)}`,
+            price: produto.media,
+            tamanhoApi: "media",
+            tipoApi: "meia",
+          });
+        if (produto.grande && parseFloat(produto.grande) > 0)
+          sizeOptions.push({
+            displayText: `Grande (Fatia) - R$ ${parseFloat(
+              produto.grande
+            ).toFixed(2)}`,
+            price: produto.grande,
+            tamanhoApi: "grande",
+            tipoApi: "meia",
+          });
+        if (produto.media_inteira && parseFloat(produto.media_inteira) > 0)
+          sizeOptions.push({
+            displayText: `Média Inteira - R$ ${parseFloat(
+              produto.media_inteira
+            ).toFixed(2)}`,
+            price: produto.media_inteira,
+            tamanhoApi: "media",
+            tipoApi: "inteira",
+          });
+        if (produto.grande_inteira && parseFloat(produto.grande_inteira) > 0)
+          sizeOptions.push({
+            displayText: `Grande Inteira - R$ ${parseFloat(
+              produto.grande_inteira
+            ).toFixed(2)}`,
+            price: produto.grande_inteira,
+            tamanhoApi: "grande",
+            tipoApi: "inteira",
+          });
+      } else {
+        // Não-pizzas
+        if (produto.pequena && parseFloat(produto.pequena) > 0) {
+          // Assumindo 'pequena' é o preço unitário/único
+          sizeOptions.push({
+            displayText: `Unidade - R$ ${parseFloat(produto.pequena).toFixed(
+              2
+            )}`,
+            price: produto.pequena,
+            tamanhoApi: "pequena",
+            tipoApi: "inteira",
+          }); // Placeholders para API
+        } else if (produto.media && parseFloat(produto.media) > 0) {
+          // Adicionando fallback se 'pequena' não existir mas 'media' sim
+          sizeOptions.push({
+            displayText: `Unidade - R$ ${parseFloat(produto.media).toFixed(2)}`,
+            price: produto.media,
+            tamanhoApi: "media",
+            tipoApi: "inteira",
+          });
+        } else if (produto.grande && parseFloat(produto.grande) > 0) {
+          // Fallback para 'grande'
+          sizeOptions.push({
+            displayText: `Unidade - R$ ${parseFloat(produto.grande).toFixed(
+              2
+            )}`,
+            price: produto.grande,
+            tamanhoApi: "grande",
+            tipoApi: "inteira",
+          });
+        }
       }
 
-      let card = document.createElement("div");
-      card.className = "col-md-6 col-lg-4 mb-4 product-card-item";
-
-      const sizeOptions = [];
-      // Verifica se os campos de preço existem e são maiores que 0 ou não nulos antes de adicionar
-      if (item.pequena && parseFloat(item.pequena) > 0)
-        sizeOptions.push({
-          text: `Pequena - R$ ${formatPrice(item.pequena)}`,
-          value: item.pequena,
-          name: "Pequena",
-        });
-      if (item.media && parseFloat(item.media) > 0)
-        sizeOptions.push({
-          text: `Média - R$ ${formatPrice(item.media)}`,
-          value: item.media,
-          name: "Média",
-        });
-      if (item.grande && parseFloat(item.grande) > 0)
-        sizeOptions.push({
-          text: `Grande - R$ ${formatPrice(item.grande)}`,
-          value: item.grande,
-          name: "Grande",
-        });
-      if (item.media_inteira && parseFloat(item.media_inteira) > 0)
-        sizeOptions.push({
-          text: `Média Inteira - R$ ${formatPrice(item.media_inteira)}`,
-          value: item.media_inteira,
-          name: "Média Inteira",
-        });
-      if (item.grande_inteira && parseFloat(item.grande_inteira) > 0)
-        sizeOptions.push({
-          text: `Grande Inteira - R$ ${formatPrice(item.grande_inteira)}`,
-          value: item.grande_inteira,
-          name: "Grande Inteira",
-        });
-
-      sizeOptions.forEach((option) => {
-        option.text = cleanSizeName(option.text.replace(/Pizza |Fatia /gi, ""));
-        option.name = cleanSizeName(option.name);
-      });
-
       let selectHTML = "";
-      let defaultPriceForButton = "0";
-      let defaultSizeNameForButton = "Item";
-
       if (sizeOptions.length > 0) {
-        defaultPriceForButton = sizeOptions[0].value;
-        defaultSizeNameForButton = sizeOptions[0].name;
-
-        selectHTML = `<div class="form-group mt-2 mb-2">
-                            <label for="size-select-${item.produto_id}" class="form-label small">Escolha o tamanho:</label>
-                            <select id="size-select-${item.produto_id}" class="form-select form-select-sm">`;
+        selectHTML = `
+          <div class="form-group mt-2 mb-2">
+            <label for="size-select-${produto.produto_id}" class="form-label small fw-bold">Opção:</label>
+            <select id="size-select-${produto.produto_id}" class="form-select form-select-sm">`;
         sizeOptions.forEach((opt) => {
           selectHTML += `<option value='${JSON.stringify({
-            price: opt.value,
-            sizeName: opt.name,
-          })}'>${opt.text}</option>`;
+            price: opt.price,
+            tamanhoApi: opt.tamanhoApi,
+            tipoApi: opt.tipoApi,
+          })}'>${opt.displayText}</option>`;
         });
-        selectHTML += `</select></div>`;
-      } else if (item.preco_unico && parseFloat(item.preco_unico) > 0) {
-        // Se sua API tivesse um campo assim para itens de preço único
-        defaultPriceForButton = item.preco_unico;
-        defaultSizeNameForButton = item.categoria;
-        selectHTML = `<p class="card-text price-item mt-2 mb-2">Preço: R$ ${formatPrice(
-          item.preco_unico
-        )}</p>`;
+        selectHTML += `</select>
+          </div>`;
       } else {
-        // Se não houver sizeOptions e nem preco_unico, pode ser um item sem preço definido ou com estrutura diferente
-        // No caso do "Wrap de Frango" e "Bolo de Cenoura", eles têm item.pequena.
-        // Se item.pequena for o único preço, ele será pego pelo sizeOptions.
-        // Se não houver nenhum preço (todos 0 ou null), o select ficará vazio.
-        selectHTML = `<p class="text-muted small mt-2 mb-2">Opções de tamanho indisponíveis.</p>`;
+        // Se não houver opções, talvez o produto não tenha preço ou esteja indisponível
+        selectHTML = `<p class="text-danger small mt-2 mb-2">Produto indisponível.</p>`;
       }
 
       card.innerHTML = `
-          <div class="card h-100 shadow-sm">
-            <img src="${item.caminho}" class="card-img-top" alt="${
-        item.nome
+        <div class="card h-100 shadow-sm">
+          <img src="${imagem}" class="card-img-top" alt="${
+        produto.nome
       }" style="height: 200px; object-fit: cover;">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-center" style="color: #FFA831;"><b>${
-                item.nome
-              }</b></h5>
-              ${
-                item.ingredientes
-                  ? `<p class="card-text ingredients"><small><strong>Ingredientes:</strong> ${item.ingredientes}</small></p>`
-                  : ""
-              }
-              ${
-                item.detalhes
-                  ? `<p class="card-text details"><small><strong>Detalhes:</strong> ${item.detalhes}</small></p>`
-                  : ""
-              }
-              ${selectHTML} 
-              <div class="mt-auto">
-                <div class="d-flex justify-content-center align-items-center mt-3">
-                  <div class="btn-group rounded-pill me-2" style="background: #FFEACE;">
-                    <button class="btn btn-sm btn-minus" data-product-id="${
-                      item.produto_id
-                    }">-</button>
-                    <span class="quantity px-2" id="qtd-${
-                      item.produto_id
-                    }">1</span>
-                    <button class="btn btn-sm btn-plus" data-product-id="${
-                      item.produto_id
-                    }">+</button>
-                  </div>
-                </div>
-                <div class="text-center mt-2">
-                    <button class="btn btn-dark rounded-pill add-to-cart-btn" 
-                            style="background-color: #FFA831; border: none;"
-                            data-id="${item.produto_id}"
-                            data-name="${item.nome}"
-                            data-image="${item.caminho}"
-                            data-default-price="${defaultPriceForButton}" 
-                            data-default-size-name="${defaultSizeNameForButton}"
-                            ${
-                              sizeOptions.length === 0 &&
-                              (!item.preco_unico ||
-                                parseFloat(item.preco_unico) <= 0)
-                                ? "disabled"
-                                : ""
-                            }> 
-                      <i class="bi bi-cart-plus-fill me-1"></i> Adicionar
-                    </button>
-                </div>
-              </div>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">${produto.nome}</h5>
+            <p class="card-text small text-muted">${
+              produto.ingredientes || ""
+            }</p>
+            <p class="card-text small">${produto.detalhes || ""}</p>
+            ${selectHTML}
+            <div class="d-flex align-items-center mt-auto pt-2">
+              <label for="qtd-${
+                produto.produto_id
+              }" class="small me-2 fw-bold">Qtd:</label>
+              <input type="number" id="qtd-${
+                produto.produto_id
+              }" value="1" min="1" class="form-control form-control-sm me-2" style="width: 70px;">
+              <button class="btn btn-sm text-white add-to-cart-btn flex-grow-1" style="background-color: #FFA831;" 
+                      data-id="${produto.produto_id}" 
+                      data-nome="${produto.nome}" 
+                      ${sizeOptions.length === 0 ? "disabled" : ""}>
+                <i class="bi bi-cart-plus"></i> Adicionar
+              </button>
             </div>
           </div>
-        `;
-      productContainer.appendChild(card);
-    });
+        </div>
+      `;
+      return card;
+    }
 
-    addQuantityButtonListeners();
-    addCartButtonListeners();
-  }
+    function renderizarProdutos(produtosFiltrados) {
+      // Limpa containers
+      if (pizzasContainer) pizzasContainer.innerHTML = "";
+      if (hamburguerContainer) hamburguerContainer.innerHTML = "";
+      if (bebidasContainer) bebidasContainer.innerHTML = "";
+      if (sobremesaContainer) sobremesaContainer.innerHTML = "";
 
-  function populateCategoryFilter(products) {
-    // Pega categorias únicas, removendo espaços em branco extras e convertendo para um formato consistente para o value do option
-    const categoriesData = [
-      ...new Set(products.map((p) => p.categoria.trim())),
-    ].map((cat) => ({
-      text: cat, // Texto original para exibição
-      value: cat.toLowerCase().replace(/\s+/g, "-"), // Valor para o option (ex: "hambúrguer")
-    }));
+      if (produtosFiltrados.length === 0) {
+        // Opcional: Mostrar mensagem se nenhum produto corresponder ao filtro
+        const algumContainerVisivel = document.querySelector(
+          '.product-section[style*="display: block"] .row'
+        );
+        if (algumContainerVisivel)
+          algumContainerVisivel.innerHTML =
+            '<p class="text-center col-12">Nenhum produto encontrado para esta categoria.</p>';
+      }
 
-    categoryFilterSelect.innerHTML = "";
+      produtosFiltrados.forEach((produto) => {
+        const categoria = produto?.categoria?.toLowerCase() || "";
+        const card = criarCard(produto);
 
-    // Adiciona "Todas as Categorias"
-    const allOption = document.createElement("option");
-    allOption.value = "all";
-    allOption.textContent = "Todas as Categorias";
-    categoryFilterSelect.appendChild(allOption);
-
-    // Adiciona as categorias da API
-    categoriesData.forEach((catData) => {
-      const option = document.createElement("option");
-      option.value = catData.value; // usa o valor normalizado
-      option.textContent = catData.text; // usa o texto original
-      categoryFilterSelect.appendChild(option);
-    });
-  }
-
-  function filterAndDisplayProducts() {
-    const selectedCategoryValue = categoryFilterSelect.value; // Este será o valor normalizado (ex: "hambúrguer")
-
-    document.querySelectorAll(".product-section").forEach((section) => {
-      section.style.display = "none";
-    });
-
-    Object.values(categoryContainersMap).forEach((mapInfo) => {
-      const container = document.getElementById(mapInfo.containerId);
-      if (container) container.innerHTML = "";
-    });
-
-    if (selectedCategoryValue === "all") {
-      renderProducts(allProductsData);
-      Object.values(categoryContainersMap).forEach((mapInfo) => {
-        const sectionElement = document.getElementById(mapInfo.sectionId);
-        // Mostra a seção apenas se ela contiver produtos após a renderização
-        const containerElement = document.getElementById(mapInfo.containerId);
-        if (
-          sectionElement &&
-          containerElement &&
-          containerElement.children.length > 0
+        if (categoria.includes("pizza") && pizzasContainer) {
+          pizzasContainer.appendChild(card);
+        } else if (categoria.includes("hambúrguer") && hamburguerContainer) {
+          // Corrigido para 'hambúrguer'
+          hamburguerContainer.appendChild(card);
+        } else if (
+          (categoria.includes("bebida") ||
+            categoria.includes("suco") ||
+            categoria.includes("refrigerante") ||
+            categoria.includes("cerveja")) &&
+          bebidasContainer
         ) {
-          sectionElement.style.display = "block";
-        } else if (sectionElement) {
-          sectionElement.style.display = "none"; // Garante que seções vazias fiquem ocultas
+          bebidasContainer.appendChild(card);
+        } else if (categoria.includes("sobremesa") && sobremesaContainer) {
+          sobremesaContainer.appendChild(card);
+        } else {
+          // Fallback para categorias não mapeadas explicitamente, ou se um container não existir
+          // Poderia adicionar a um container "Outros" ou logar
+          // console.warn(`Produto "${produto.nome}" com categoria "${produto.categoria}" não classificado.`);
         }
       });
-    } else {
-      // Filtra usando a categoria original da API, comparando com o texto da opção selecionada
-      // ou, melhor, usando o 'value' do select que corresponde à chave do map
-      const filtered = allProductsData.filter(
-        (p) =>
-          p.categoria.toLowerCase().replace(/\s+/g, "-") ===
-          selectedCategoryValue
-      );
-      renderProducts(filtered);
-
-      // A chave para categoryContainersMap deve ser a categoria da API em minúsculas
-      // O selectedCategoryValue já é a categoria da API em minúsculas (e com hífen se houver espaço)
-      const mapInfo = categoryContainersMap[selectedCategoryValue];
-      if (mapInfo && mapInfo.sectionId) {
-        const sectionElement = document.getElementById(mapInfo.sectionId);
-        const containerElement = document.getElementById(mapInfo.containerId);
-        if (
-          sectionElement &&
-          containerElement &&
-          containerElement.children.length > 0
-        ) {
-          // Mostra a seção apenas se tiver produtos
-          sectionElement.style.display = "block";
-        }
-      } else {
-        console.warn(
-          `Nenhuma seção mapeada para a categoria selecionada: ${selectedCategoryValue}`
-        );
-      }
-    }
-  }
-
-  // Fetch inicial dos produtos
-  fetch(apiUrl)
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      allProductsData = data;
-      populateCategoryFilter(allProductsData);
-      filterAndDisplayProducts();
-
-      if (categoryFilterSelect) {
-        categoryFilterSelect.addEventListener(
-          "change",
-          filterAndDisplayProducts
-        );
-      }
-    })
-    .catch((error) => {
-      console.error("Erro ao carregar produtos: ", error);
-      const mainContent = document.querySelector("main");
-      if (mainContent)
-        mainContent.innerHTML =
-          '<div class="container text-center py-5"><p class="text-danger h3">Desculpe, não foi possível carregar o cardápio. Tente novamente mais tarde.</p></div>';
-    });
-
-  // --- Funções do Carrinho e Quantidade (mantidas como antes, com pequenas melhorias nos listeners) ---
-  function addQuantityButtonListeners() {
-    document.querySelectorAll(".btn-minus, .btn-plus").forEach((button) => {
-      button.removeEventListener("click", handleQuantityChange); // Remove listener antigo se houver
-      button.addEventListener("click", handleQuantityChange);
-    });
-  }
-
-  function handleQuantityChange() {
-    // Definida fora para ser reutilizável
-    const productId = this.dataset.productId;
-    const delta = this.classList.contains("btn-plus") ? 1 : -1;
-    alterarQuantidade(productId, delta);
-  }
-
-  function addCartButtonListeners() {
-    document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
-      button.removeEventListener("click", handleAddToCart); // Remove listener antigo
-      button.addEventListener("click", handleAddToCart);
-    });
-  }
-
-  function handleAddToCart() {
-    // Definida fora para ser reutilizável
-    if (this.disabled) return; // Não faz nada se o botão estiver desabilitado
-
-    const id = this.dataset.id;
-    const name = this.dataset.name;
-    const image = this.dataset.image;
-    const quantity = parseInt(document.getElementById(`qtd-${id}`).textContent);
-
-    const sizeSelect = document.getElementById(`size-select-${id}`);
-    let productPrice;
-    let productSizeName;
-
-    if (sizeSelect && sizeSelect.value) {
-      try {
-        const selectedOptionData = JSON.parse(sizeSelect.value);
-        productPrice = selectedOptionData.price;
-        productSizeName = selectedOptionData.sizeName;
-      } catch (e) {
-        productPrice = this.dataset.defaultPrice; // Usa o fallback se o parse falhar
-        productSizeName = this.dataset.defaultSizeName;
-      }
-    } else {
-      productPrice = this.dataset.defaultPrice;
-      productSizeName = this.dataset.defaultSizeName;
+      adicionarEventosBotoes();
     }
 
-    if (!productPrice || parseFloat(productPrice) <= 0) {
-      // Verifica se o preço é válido
-      alert("Opção de tamanho/preço inválida ou indisponível.");
-      return;
-    }
+    function adicionarEventosBotoes() {
+      document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
+        // Remove listener antigo para evitar duplicidade se renderizarProdutos for chamada múltiplas vezes
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
 
-    if (quantity > 0) {
-      adicionarAoCarrinhoLocalStorage(
-        id,
-        name,
-        productPrice,
-        quantity,
-        image,
-        productSizeName
-      );
-    } else {
-      alert("Selecione uma quantidade maior que 0.");
-    }
-  }
+        newBtn.addEventListener("click", async () => {
+          console.log("Botão Adicionar clicado:", newBtn.dataset.id);
+          const id_produto_str = newBtn.dataset.id;
+          const nome_produto = newBtn.dataset.nome;
 
-  window.alterarQuantidade = function (produtoId, delta) {
-    const qtdElem = document.getElementById("qtd-" + productId);
-    if (!qtdElem) return;
-    let current = parseInt(qtdElem.textContent);
-    current += delta;
-    if (current < 1) current = 1;
-    qtdElem.textContent = current;
-  };
+          const cliente_id = getClienteId();
+          if (!cliente_id) {
+            alert("Por favor, faça login para adicionar itens ao pedido.");
+            console.log("Cliente não logado, abortando adição ao carrinho.");
+            return;
+          }
 
-  function adicionarAoCarrinhoLocalStorage(
-    productId,
-    productName,
-    productPrice,
-    quantity,
-    productImage,
-    productSizeName
-  ) {
-    let cart = JSON.parse(localStorage.getItem("fatiasSaboresCart")) || [];
-    const price = parseFloat(productPrice);
+          const qtdInput = document.getElementById(`qtd-${id_produto_str}`);
+          const quantidade = qtdInput ? parseInt(qtdInput.value) : 1;
+          if (isNaN(quantidade) || quantidade < 1) {
+            alert("Quantidade inválida.");
+            console.log("Quantidade inválida: ", quantidade);
+            return;
+          }
 
-    if (isNaN(price) || price <= 0) {
-      // Validação mais robusta do preço
-      alert("Não foi possível adicionar o item. Preço inválido.");
-      return;
-    }
-    const cartItemId = `${productId}-${productSizeName.replace(/\s+/g, "-")}`;
-    const existingItemIndex = cart.findIndex(
-      (item) => item.cartId === cartItemId
-    );
+          const sizeSelect = document.getElementById(
+            `size-select-${id_produto_str}`
+          );
+          if (!sizeSelect || !sizeSelect.value) {
+            // Este caso não deveria ocorrer se o botão não estiver desabilitado.
+            alert("Por favor, selecione uma opção para o produto.");
+            console.log("Select de tamanho não encontrado ou sem valor.");
+            return;
+          }
 
-    if (existingItemIndex > -1) {
-      cart[existingItemIndex].quantity += quantity;
-    } else {
-      cart.push({
-        cartId: cartItemId,
-        id: productId,
-        name: productName,
-        sizeName: productSizeName,
-        price: price,
-        quantity: quantity,
-        image: productImage,
+          let selectedOptionData;
+          try {
+            selectedOptionData = JSON.parse(sizeSelect.value);
+          } catch (e) {
+            alert("Erro ao processar a opção selecionada.");
+            console.error(
+              "Erro ao parsear JSON do select:",
+              e,
+              "Valor:",
+              sizeSelect.value
+            );
+            return;
+          }
+
+          const preco_unitario_selecionado = parseFloat(
+            selectedOptionData.price
+          );
+          const tamanho_api_selecionado = selectedOptionData.tamanhoApi;
+          const tipo_api_selecionado = selectedOptionData.tipoApi;
+
+          if (
+            isNaN(preco_unitario_selecionado) ||
+            preco_unitario_selecionado <= 0 ||
+            !tamanho_api_selecionado ||
+            !tipo_api_selecionado
+          ) {
+            alert("A opção selecionada para o produto é inválida.");
+            console.log("Dados da opção inválidos:", selectedOptionData);
+            return;
+          }
+
+          console.log(
+            `Iniciando ${quantidade} chamadas à API para o produto ${nome_produto}`
+          );
+          let todosAdicionadosComSucesso = true;
+
+          for (let i = 0; i < quantidade; i++) {
+            const payload = {
+              cliente_id: cliente_id,
+              pizza_id: parseInt(id_produto_str), // API espera 'pizza_id'
+              preco: preco_unitario_selecionado, // API espera 'preco' (unitário)
+              tamanho_selecionado: tamanho_api_selecionado,
+              tipo_pizza: tipo_api_selecionado,
+            };
+            console.log(
+              `Payload para item ${i + 1}/${quantidade}:`,
+              JSON.stringify(payload)
+            );
+
+            try {
+              const respostaPost = await fetch(urlPost, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+
+              // Tenta ler a resposta como JSON, mesmo se não for OK
+              let resultadoPost;
+              const contentType = respostaPost.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                resultadoPost = await respostaPost.json();
+              } else {
+                const textResult = await respostaPost.text();
+                console.warn("Resposta da API não é JSON. Texto:", textResult);
+                // Tenta criar um objeto de erro padronizado
+                resultadoPost = {
+                  success: false,
+                  message: `Resposta inesperada do servidor (Status: ${
+                    respostaPost.status
+                  }). Conteúdo: ${textResult.substring(0, 100)}...`,
+                };
+              }
+
+              console.log(`Resposta da API para item ${i + 1}:`, resultadoPost);
+
+              if (!respostaPost.ok || !resultadoPost.success) {
+                alert(
+                  `Erro ao adicionar item ${
+                    i + 1
+                  } (${nome_produto}) ao pedido: ${
+                    resultadoPost.message || `Erro HTTP ${respostaPost.status}`
+                  }`
+                );
+                todosAdicionadosComSucesso = false;
+                break;
+              }
+            } catch (erroComunicacao) {
+              console.error(
+                `Erro de comunicação ao adicionar item ${i + 1}:`,
+                erroComunicacao
+              );
+              alert(
+                `Erro de comunicação ao adicionar item ${
+                  i + 1
+                } (${nome_produto}). Verifique sua conexão.`
+              );
+              todosAdicionadosComSucesso = false;
+              break;
+            }
+          } // Fim do loop FOR
+
+          if (todosAdicionadosComSucesso) {
+            alert(
+              `${quantidade}x "${nome_produto}" adicionado(s) com sucesso ao pedido!`
+            );
+            if (qtdInput) qtdInput.value = 1; // Reseta quantidade no input
+            // updateCartCount(); // Chamar aqui se tiver API para buscar o total do carrinho
+          }
+        });
       });
     }
-    localStorage.setItem("fatiasSaboresCart", JSON.stringify(cart));
-    updateCartCount();
-    alert(`"${productName} (${productSizeName})" adicionado ao carrinho!`);
-    // Reseta a quantidade para 1 no display do produto específico
-    const qtdElem = document.getElementById(`qtd-${productId}`);
-    if (qtdElem) qtdElem.textContent = "1";
-  }
 
-  function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem("fatiasSaboresCart")) || [];
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (cartCountElement) cartCountElement.textContent = totalItems;
-  }
+    // Renderização inicial e filtro
+    renderizarProdutos(produtos);
+    updateCartCount(); // Atualiza contador no início
 
-  updateCartCount();
+    if (categoryFilter) {
+      categoryFilter.addEventListener("change", () => {
+        const categoriaSelecionada = categoryFilter.value;
+        // Mostra/oculta seções de produtos
+        document.querySelectorAll(".product-section").forEach((section) => {
+          section.style.display = "none";
+        });
+
+        if (categoriaSelecionada === "all") {
+          renderizarProdutos(produtos); // Re-renderiza todos os produtos
+          // Mostra todas as seções que podem ter produtos
+          if (
+            pizzasContainer &&
+            produtos.some((p) => p.categoria?.toLowerCase().includes("pizza"))
+          )
+            document.getElementById("pizzas-section").style.display = "block";
+          if (
+            hamburguerContainer &&
+            produtos.some((p) =>
+              p.categoria?.toLowerCase().includes("hambúrguer")
+            )
+          )
+            document.getElementById("hamburguer-section").style.display =
+              "block";
+          if (
+            bebidasContainer &&
+            produtos.some((p) =>
+              p.categoria
+                ?.toLowerCase()
+                .match(/bebida|suco|refrigerante|cerveja/)
+            )
+          )
+            document.getElementById("bebidas-section").style.display = "block";
+          if (
+            sobremesaContainer &&
+            produtos.some((p) =>
+              p.categoria?.toLowerCase().includes("sobremesa")
+            )
+          )
+            document.getElementById("sobremesa-section").style.display =
+              "block";
+        } else {
+          const filtrados = produtos.filter(
+            (p) => p.categoria === categoriaSelecionada
+          );
+          renderizarProdutos(filtrados); // Re-renderiza apenas os filtrados
+          // Mostra apenas a seção da categoria selecionada, se ela tiver produtos
+          const categoriaNorm = categoriaSelecionada
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+          if (
+            categoriaNorm.includes("pizza") &&
+            pizzasContainer &&
+            filtrados.length > 0
+          )
+            document.getElementById("pizzas-section").style.display = "block";
+          else if (
+            categoriaNorm.includes("hambúrguer") &&
+            hamburguerContainer &&
+            filtrados.length > 0
+          )
+            document.getElementById("hamburguer-section").style.display =
+              "block";
+          else if (
+            categoriaNorm.match(/bebida|suco|refrigerante|cerveja/) &&
+            bebidasContainer &&
+            filtrados.length > 0
+          )
+            document.getElementById("bebidas-section").style.display = "block";
+          else if (
+            categoriaNorm.includes("sobremesa") &&
+            sobremesaContainer &&
+            filtrados.length > 0
+          )
+            document.getElementById("sobremesa-section").style.display =
+              "block";
+        }
+      });
+    }
+  } catch (erro) {
+    console.error("Erro fatal ao carregar ou processar produtos:", erro);
+    // Tenta exibir uma mensagem de erro mais amigável na página
+    const mainElement = document.querySelector("main");
+    if (mainElement) {
+      mainElement.innerHTML = `<div class="container text-center py-5"><p class="text-danger h3">Desculpe, o cardápio está indisponível no momento.</p><p class="text-muted">Por favor, tente novamente mais tarde.</p><p><small>Detalhe do erro: ${erro.message}</small></p></div>`;
+    } else {
+      alert("Erro ao carregar o cardápio. Tente novamente mais tarde.");
+    }
+  }
 });
-
-function getClienteId() {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  return usuario ? usuario.id : null;
-}
