@@ -97,27 +97,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (categoriaLowerCard === "pizza") {
         if (produto.pequena && parseFloat(produto.pequena) > 0)
           sizeOptions.push({
-            displayText: `Pequena (Fatia) - R$ ${parseFloat(
-              produto.pequena
-            ).toFixed(2)}`,
+            displayText: `Pequena - R$ ${parseFloat(produto.pequena).toFixed(
+              2
+            )}`,
             price: produto.pequena,
             tamanhoApi: "pequena",
             tipoApi: "meia",
           });
         if (produto.media && parseFloat(produto.media) > 0)
           sizeOptions.push({
-            displayText: `Média (Fatia) - R$ ${parseFloat(
-              produto.media
-            ).toFixed(2)}`,
+            displayText: `Média - (Meia)R$ ${parseFloat(produto.media).toFixed(
+              2
+            )}`,
             price: produto.media,
             tamanhoApi: "media",
             tipoApi: "meia",
           });
         if (produto.grande && parseFloat(produto.grande) > 0)
           sizeOptions.push({
-            displayText: `Grande (Fatia) - R$ ${parseFloat(
-              produto.grande
-            ).toFixed(2)}`,
+            displayText: `Grande - R$ ${parseFloat(produto.grande).toFixed(2)}`,
             price: produto.grande,
             tamanhoApi: "grande",
             tipoApi: "meia",
