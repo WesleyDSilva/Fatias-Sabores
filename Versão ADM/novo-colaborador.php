@@ -1,0 +1,59 @@
+<?php
+// novo_colaborador.php
+?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Novo Colaborador - Fatias & Sabores</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topo">
+    <div class="logo">
+      <img src="logo.png" alt="Logo Fatias & Sabores" />
+    </div>
+    <nav>
+      <a href="#">Início</a>
+      <a href="#">Cardápio</a>
+      <a href="#">Cadastre-se</a>
+      <a href="#">Login</a>
+      <a href="#">Carrinho</a>
+    </nav>
+  </header>
+
+  <main class="admin-container">
+    <aside class="menu-lateral">
+      <h3>MENU</h3>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Colaboradores</a></li>
+        <li><a href="#">Produtos</a></li>
+        <li><a href="#">Pedidos</a></li>
+      </ul>
+    </aside>
+
+    <section class="conteudo">
+      <h2>NOVO COLABORADOR</h2>
+      <h4 class="subtitulo">PERFIL</h4>
+      <form class="formulario" method="post" action="inserir_colaborador.php">
+        <label>Nome<br/><input type="text" name="nome" placeholder="Nome Completo do Colaborador" required /></label><br/>
+        <label>Função<br/><input type="text" name="funcao" placeholder="Cargo" required /></label><br/>
+        <label>E-mail Login<br/><input type="email" name="email" placeholder="seuemail@gmail.com" required /></label><br/>
+        <label>Senha<br/><input type="password" name="senha" placeholder="Senha" required /></label><br/>
+        <label>Confirmação de Senha<br/><input type="password" name="confirma_senha" placeholder="Confirme a nova senha" required /></label><br/>
+        <button type="submit">INSERIR</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div>
+      <p><strong>Contate-nos</strong></p>
+      <p>📞 (19) 7070-7070<br/>📧 pizzariafatiasesabores</p>
+      <p>📸 @pizzariafatiasesabores</p>
+    </div>
+  </footer>
+</body>
+</html>
