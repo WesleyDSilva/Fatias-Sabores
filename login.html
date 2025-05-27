@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Ícones do Bootstrap (para o ícone do olho) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body class="d-flex flex-column min-vh-100">
   <!-- Menu com Bootstrap -->
@@ -42,7 +44,8 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="carrinho.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831; width: auto;">
+            <!-- ****** ALTERAÇÃO AQUI ****** -->
+            <a href="carrinho.php" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831; width: auto;">
               <img src="/img/carrinho.png" style="width: 24px; height: 24px;"> CARRINHO
             </a>
           </li>
@@ -57,31 +60,32 @@
     <main class="flex-grow-1">
       <section>
         <div class="d-flex align-items-center justify-content-center" style="color: #FFA831; height: 100px; font-size: x-large;">
-        <p class="col-mb-6 text-center"><b>A felicidade começa com uma fatia: descubra o sabor que conquista a cada mordida!</b></p>   
+        <p class="col-mb-6 text-center"><b>A felicidade começa com uma fatia: descubra o sabor que conquista a cada mordida!</b></p>
         </div>
         <div class="d-flex align-items-center justify-content-center" style="background: #FFA831; color: #ffffff; height: 100px;">
           <h1 class="m-0 mt-1"><b>LOGIN</b></h1>
         </div>
         <div class="d-flex align-items-center justify-content-center" style="height: 80px; font-size: large;">
-            <p class="col-mb-4 text-center">Realize seu login para prosseguir com seu pedido.</p>   
+            <p class="col-mb-4 text-center">Realize seu login para prosseguir com seu pedido.</p>
         </div>
       </section>
       <section>
           <div class="container-fluid d-flex justify-content-center align-items-center">
-            <form class="p-4 col-10 col-md-5" onsubmit="event.preventDefault(); autenticar();">
+            <!-- ****** ALTERAÇÃO AQUI: Removido onclick do botão, o onsubmit do form já chama autenticar() ****** -->
+            <form class="p-4 col-10 col-md-5" id="loginForm">
               <!-- E-mail -->
               <div class="form-floating mb-3">
                 <input type="email" class="form-control rounded-pill" id="email" placeholder="E-mail" required>
                 <label for="email">E-mail</label>
               </div>
-      
+
               <!-- Senha -->
               <div class="form-floating mb-3 position-relative">
                 <input type="password" class="form-control rounded-pill" id="senha" placeholder="Senha" required>
                 <label for="senha">Senha</label>
                 <!-- Botão para mostrar/ocultar senha -->
                 <button type="button" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2" onclick="toggleSenha('senha')">
-                  <span id="iconeSenha" class="bi bi-eye"></span>
+                  <i id="iconeSenha" class="bi bi-eye-fill"></i> <!-- Usei bi-eye-fill para ter um ícone padrão -->
                 </button>
               </div>
 
@@ -89,13 +93,14 @@
               <div class="mb-3 d-flex justify-content-end align-items-center">
                 <a href="recsenha.html" style="color: #FFA831;"><b>Esqueceu a senha?</b></a>
               </div>
-            <p id="mensagem"></p>
+            <p id="mensagem" class="text-center"></p> <!-- Mensagem de erro/sucesso -->
             <!-- Botão de login-->
             <div class="col-12 mt-2 mb-1 text-center">
-              <button onclick="autenticar()" class="btn btn-dark font-weight-bold rounded-pill px-4" style="background-color: #FFA831; border: none;"><b>ENTRAR</b></button>
+              <!-- ****** ALTERAÇÃO AQUI: type="submit" para o botão dentro do form ****** -->
+              <button type="submit" class="btn btn-dark font-weight-bold rounded-pill px-4" style="background-color: #FFA831; border: none;"><b>ENTRAR</b></button>
             </div>
             <div class="col-12 mb-1 text-center">
-              <p>Não possui cadastro? <a href="/cadastro.html" style="text-decoration: none; color: #FFA831;">Cadastre-se agora!</a></p>
+              <p>Não possui cadastro? <a href="cadastro.html" style="text-decoration: none; color: #FFA831;">Cadastre-se agora!</a></p>
             </div>
           </div>
       </section>
@@ -151,12 +156,129 @@
   <!-- FIM do RODAPÉ -->
 
   <!-- JavaScript próprio -->
+  <!-- Se você tiver as funções autenticar e toggleSenha em scripts.js, este é o local correto -->
   <script src="/javascript/scripts.js"></script>
-  <script src="/javascript/cadastro.js"></script>
+  <!-- cadastro.js provavelmente não é necessário aqui, a menos que reutilize funções -->
+  <!-- <script src="/javascript/cadastro.js"></script> -->
+
+  <!-- ****** NOVO SCRIPT AQUI ****** -->
+  <script>
+    // Adiciona o listener ao formulário para chamar autenticar
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Previne o envio padrão do formulário
+        autenticar();
+    });
+
+    function toggleSenha(idCampoSenha) {
+        const campoSenha = document.getElementById(idCampoSenha);
+        const iconeSenha = document.getElementById('iconeSenha');
+        if (campoSenha.type === "password") {
+            campoSenha.type = "text";
+            iconeSenha.classList.remove('bi-eye-fill');
+            iconeSenha.classList.add('bi-eye-slash-fill');
+        } else {
+            campoSenha.type = "password";
+            iconeSenha.classList.remove('bi-eye-slash-fill');
+            iconeSenha.classList.add('bi-eye-fill');
+        }
+    }
+
+    async function autenticar() {
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+        const mensagemDiv = document.getElementById('mensagem');
+        
+        mensagemDiv.textContent = 'Autenticando...';
+        mensagemDiv.className = 'text-center mt-3 alert alert-info'; // Reset e informa
+
+        // Validação básica de campos (opcional, mas bom)
+        if (!email || !senha) {
+            mensagemDiv.textContent = 'Por favor, preencha email e senha.';
+            mensagemDiv.className = 'text-center mt-3 alert alert-warning';
+            return;
+        }
+
+        try {
+            // 1. Chamar sua API de autenticação (api_auth_hash.php)
+            // Certifique-se que o caminho para 'api_auth_hash.php' está correto
+            // Se login.html e api_auth_hash.php estão na raiz do site, 'api_auth_hash.php' está ok.
+            const authResponse = await fetch('/api/api_auth_hash.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email, senha: senha })
+            });
+
+            if (!authResponse.ok) {
+                let errorMsg = `Erro HTTP ${authResponse.status} na autenticação.`;
+                try {
+                    const errorData = await authResponse.json();
+                    errorMsg = errorData.message || errorMsg;
+                } catch (e) { /* Não conseguiu parsear JSON de erro */ }
+                throw new Error(errorMsg);
+            }
+            
+            const authData = await authResponse.json();
+
+            if (authData.success && authData.user && typeof authData.user.id !== 'undefined') {
+                // Autenticação bem-sucedida pela API
+                // 2. Chamar o script para iniciar a sessão PHP (iniciar_sessao_usuario.php)
+                // Certifique-se que o caminho para 'iniciar_sessao_usuario.php' está correto
+                const sessionResponse = await fetch('iniciar_sessao_usuario.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(authData.user) // Envia os dados do usuário (id, nome, email)
+                });
+
+                if (!sessionResponse.ok) {
+                    let errorMsg = `Erro HTTP ${sessionResponse.status} ao iniciar sessão.`;
+                     try {
+                        const errorData = await sessionResponse.json();
+                        errorMsg = errorData.message || errorMsg;
+                    } catch (e) { /* Não conseguiu parsear JSON de erro */ }
+                    throw new Error(errorMsg);
+                }
+
+                const sessionData = await sessionResponse.json();
+
+                if (sessionData.success) {
+                    // Sessão PHP iniciada com sucesso
+                    // 3. Salvar dados do usuário no localStorage para carrinho.js
+                    localStorage.setItem('usuario', JSON.stringify(authData.user));
+                    
+                    mensagemDiv.textContent = 'Login bem-sucedido! Redirecionando...';
+                    mensagemDiv.className = 'text-center mt-3 alert alert-success';
+                    // 4. Redirecionar para o carrinho
+                    // Certifique-se que o caminho para 'carrinho.php' está correto
+                    window.location.href = 'carrinho.php';
+                } else {
+                    mensagemDiv.textContent = 'Erro ao iniciar sessão no servidor: ' + (sessionData.message || 'Erro desconhecido.');
+                    mensagemDiv.className = 'text-center mt-3 alert alert-danger';
+                }
+            } else {
+                // Falha na autenticação pela API
+                let apiMessage = 'Credenciais inválidas ou resposta inesperada da API.';
+                if (authData && authData.message) {
+                    apiMessage = authData.message;
+                } else if (!authData.user || typeof authData.user.id === 'undefined') {
+                    apiMessage = 'API de autenticação não retornou dados do usuário corretamente.';
+                    console.error("Resposta da API de autenticação (authData):", authData);
+                }
+                mensagemDiv.textContent = 'Erro de login: ' + apiMessage;
+                mensagemDiv.className = 'text-center mt-3 alert alert-danger';
+            }
+        } catch (error) {
+            console.error('Erro no processo de login:', error);
+            mensagemDiv.textContent = 'Ocorreu um erro de comunicação ou processamento: ' + error.message;
+            mensagemDiv.className = 'text-center mt-3 alert alert-danger';
+        }
+    }
+  </script>
+
   <!-- Bootstrap 5 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <!-- Ícones do Bootstrap (para o ícone do olho) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </body>
 </html>
-
