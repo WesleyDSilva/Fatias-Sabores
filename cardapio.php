@@ -54,7 +54,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             <!-- Itens do Menu -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
                 <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php">Início</a></li>
                     <li class="nav-item"><a class="nav-link" href="cardapio.php">Cardápio</a></li>
                     <li class="nav-item" id="menu-cadastro">
 
