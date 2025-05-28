@@ -45,7 +45,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     <!-- Menu com Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index.php">
                 <img src="/img/logo_pizza.png" class="img-fluid" alt="Logo" width="72px">
                 <b>Fatias &</b> Sabores
             </a>
