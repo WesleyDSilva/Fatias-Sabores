@@ -18,51 +18,64 @@ document.querySelectorAll(".flip-card").forEach((card) => {
 
 // Função para atualizar o menu baseado no status de login
 function atualizarMenuUsuario() {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuarioJSON = localStorage.getItem("usuario");
+  let usuario = null;
+  if (usuarioJSON) {
+    try {
+      usuario = JSON.parse(usuarioJSON);
+    } catch (e) {
+      console.error("Erro ao parsear 'usuario' do localStorage:", e);
+      localStorage.removeItem("usuario"); // Remove item inválido
+    }
+  }
+
   const menuLogin = document.getElementById("menu-login");
   const menuCadastro = document.getElementById("menu-cadastro");
-  const menuADM = document.getElementById("menu-adm");
+  const menuADM = document.getElementById("menu-adm"); // Este elemento é usado para o botão de Sair
   const menuFAV = document.getElementById("menu-fav");
 
-  if (usuario) {
+  if (usuario && usuario.id) {
+    // Verifica se o usuário e o ID existem
     if (menuLogin) {
+      // O elemento menuLogin será substituído pelo nome do usuário e link para perfil
       menuLogin.innerHTML = `
-              <a href="perfil.html" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center;">
-              <img src="/img/usuario.png" alt="Usuário" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;"> ${
-                usuario.nome || "Usuário"
-              }</a>
-          `;
+        <a href="perfil.php" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center;">
+          <img src="/img/usuario.png" alt="Usuário" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;"> ${
+            usuario.nome ? usuario.nome.split(" ")[0] : "Usuário" // Mostra o primeiro nome
+          }
+        </a>`;
     }
     if (menuCadastro) {
+      // menuCadastro vira link para Histórico de Pedidos
       menuCadastro.innerHTML = `
-              <a class="nav-link" href="histpedido.html">Histórico</a>
-          `;
+        <a class="nav-link" href="histpedido.php">Histórico</a>`;
     }
     if (menuADM) {
+      // menuADM (que era para admin) agora é usado para o botão de Sair
       menuADM.innerHTML = `
-              <button onclick="deslogarUsuario()" id="btn-logoff" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color:rgb(252, 44, 29); padding: 5px 10px; border: none; cursor: pointer; display: inline-flex; align-items: center;">
-              <img src="/img/logout.png" alt="Sair" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">Sair</button>
-          `;
+        <button onclick="deslogarUsuario()" id="btn-logoff" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color:rgb(252, 44, 29); padding: 5px 10px; border: none; cursor: pointer; display: inline-flex; align-items: center;">
+          <img src="/img/logout.png" alt="Sair" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">Sair
+        </button>`;
     }
     if (menuFAV) {
-      menuFAV.style.display = "list-item";
+      menuFAV.style.display = "list-item"; // Ou 'block' dependendo do seu CSS
       menuFAV.innerHTML = `
-            <a class="nav-link" href="favoritos.html">Favoritos</a>
-        `;
+        <a class="nav-link" href="favoritos.php">Favoritos</a>`;
     }
   } else {
+    // Usuário não logado
     if (menuLogin) {
       menuLogin.innerHTML = `
-            <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831;">
-              <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN
-            </a>`;
+        <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831;">
+          <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN
+        </a>`;
     }
     if (menuCadastro) {
       menuCadastro.innerHTML =
-        '<a class="nav-link" href="cadastro.html">Cadastre-se</a>';
+        '<a class="nav-link" href="cadastro.html">Cadastre-se</a>'; // Alterado para cadastro.html
     }
     if (menuADM) {
-      menuADM.innerHTML = "";
+      menuADM.innerHTML = ""; // Limpa o botão de sair
     }
     if (menuFAV) {
       menuFAV.style.display = "none";
@@ -71,16 +84,61 @@ function atualizarMenuUsuario() {
   }
 }
 
+// Chamar atualizarMenuUsuario quando o DOM estiver carregado
 document.addEventListener("DOMContentLoaded", function () {
   atualizarMenuUsuario();
 });
 
-function deslogarUsuario() {
-  localStorage.removeItem("usuario");
-  atualizarMenuUsuario();
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 100);
+// ****** FUNÇÃO DESLOGAR ATUALIZADA ******
+async function deslogarUsuario() {
+  try {
+    // 1. Chamar o script logout.php no servidor para destruir a sessão PHP
+    // Certifique-se que o caminho para 'logout.php' está correto
+    // Se scripts.js está em /javascript/ e logout.php na raiz, o caminho seria '../logout.php'
+    // Se ambos estão na raiz, 'logout.php' está ok.
+    // Assumindo que logout.php está na raiz do site, acessível por '/logout.php'
+    const response = await fetch("logout.php", {
+      // Ajuste o caminho se necessário
+      method: "GET", // Ou POST, mas GET é comum para logout simples se não houver CSRF token
+      // Não é necessário enviar corpo ou headers especiais para este logout.php
+    });
+
+    // O logout.php redireciona, então não esperamos um JSON de sucesso aqui necessariamente.
+    // O importante é que a requisição seja feita.
+    // Podemos verificar se a requisição foi bem-sucedida (status 200),
+    // mas o redirecionamento de logout.php vai acontecer de qualquer forma.
+
+    if (response.ok || response.redirected) {
+      console.log("Sessão PHP provavelmente encerrada. Limpando dados locais.");
+    } else {
+      console.warn(
+        "Chamada para logout.php pode ter falhado. Status:",
+        response.status
+      );
+      // Mesmo se falhar, prosseguimos com a limpeza local e redirecionamento
+      // para garantir que o usuário veja a interface de deslogado.
+    }
+  } catch (error) {
+    console.error("Erro ao tentar chamar logout.php:", error);
+    // Mesmo em caso de erro de rede, prosseguir com a limpeza local
+  } finally {
+    // 2. Limpar o localStorage
+    localStorage.removeItem("usuario");
+
+    // 3. Atualizar a interface do menu imediatamente
+    atualizarMenuUsuario();
+
+    // 4. Redirecionar o usuário para a página inicial ou de login
+    // O próprio logout.php já faz um redirecionamento para login.html.
+    // Se você quiser controlar o redirecionamento exclusivamente pelo JS após
+    // confirmar que a sessão PHP foi destruída, o logout.php não deveria redirecionar,
+    // mas sim retornar um JSON de sucesso.
+    // Dado que o logout.php ATUAL redireciona, este redirecionamento do JS pode ser redundante
+    // ou pode levar a um "duplo redirecionamento".
+    // Para este exemplo, vamos manter o redirecionamento do JS caso o do PHP falhe por algum motivo de rede.
+    // Ou, se o logout.php for modificado para não redirecionar:
+    window.location.href = "login.html"; // Ou 'index.html' se preferir
+  }
 }
 
 function toggleSenha(campoId) {
@@ -89,36 +147,45 @@ function toggleSenha(campoId) {
     console.warn(`Input field with ID "${campoId}" not found for toggleSenha.`);
     return;
   }
-  const button = input
-    .closest(".position-relative")
-    ?.querySelector(`button[onclick="toggleSenha('${campoId}')"]`);
-  const icon = button?.querySelector("span.bi");
+  // Ajuste no seletor do botão e ícone se necessário, baseado no HTML de login.html
+  const buttonContainer = input.closest(".position-relative");
+  const icon = buttonContainer ? buttonContainer.querySelector("i.bi") : null; // Supondo que o ícone seja <i>
 
   if (icon) {
     if (input.type === "password") {
       input.type = "text";
-      icon.classList.remove("bi-eye");
-      icon.classList.add("bi-eye-slash");
+      icon.classList.remove("bi-eye-fill"); // Ajuste conforme o ícone usado
+      icon.classList.add("bi-eye-slash-fill"); // Ajuste conforme o ícone usado
     } else {
       input.type = "password";
-      icon.classList.remove("bi-eye-slash");
-      icon.classList.add("bi-eye");
+      icon.classList.remove("bi-eye-slash-fill"); // Ajuste
+      icon.classList.add("bi-eye-fill"); // Ajuste
     }
   } else {
-    console.warn(`Icon for password field "${campoId}" not found.`);
+    // Fallback se o ícone específico não for encontrado, tenta uma abordagem mais genérica
+    // ou apenas alterna o tipo sem feedback visual do ícone se ele não estiver lá.
+    if (input.type === "password") {
+      input.type = "text";
+    } else {
+      input.type = "password";
+    }
+    console.warn(
+      `Ícone para o campo de senha "${campoId}" não encontrado ou não é um <i> com classes bi.`
+    );
   }
 }
 
+// Lógica do formulário de CADASTRO
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("cadastroForm");
   if (!form) {
-    return;
+    return; // Sai se não estiver na página de cadastro
   }
 
   const cepInput = document.getElementById("cep");
   const logradouroInput = document.getElementById("logradouro");
   const cidadeInput = document.getElementById("cidade");
-  const ufInput = document.getElementById("UF"); // Note: HTML ID is "UF"
+  const ufInput = document.getElementById("UF");
   const senhaInput = document.getElementById("senha");
   const confirmarSenhaInput = document.getElementById("confirmaSenha");
   const nomeInput = document.getElementById("nome");
@@ -156,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
               if (logradouroInput)
                 logradouroInput.value = data.logradouro || "";
               if (cidadeInput) cidadeInput.value = data.localidade || "";
-              if (ufInput) ufInput.value = data.uf || ""; // Correctly populates UF
+              if (ufInput) ufInput.value = data.uf || "";
               if (numeroCasaInput) numeroCasaInput.focus();
             }
           })
@@ -178,7 +245,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   form.addEventListener("submit", async function (event) {
-    // Made the function async
     event.preventDefault();
 
     if (senhaInput.value.length < 6) {
@@ -201,28 +267,26 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Collect form data into an object
     const formDataObject = {
       nome: nomeInput.value,
       logradouro: logradouroInput.value,
       cidade: cidadeInput.value,
-      UF: ufInput.value, // HTML ID is "UF"
-      cep: cepInput.value.replace(/\D/g, ""), // Send only numbers for CEP
+      UF: ufInput.value,
+      cep: cepInput.value.replace(/\D/g, ""),
       numero_casa: numeroCasaInput.value,
-      complemento: complementoInput.value, // Will be empty string if not filled, PHP handles null
+      complemento: complementoInput.value,
       email: emailInput.value,
       telefone: telefoneInput.value,
-      senha: senhaInput.value, // Send plain password, PHP will hash it
+      senha: senhaInput.value,
       cpf: cpfInput.value,
     };
 
-    // Disable submit button to prevent multiple submissions
     const submitButton = form.querySelector('button[type="submit"]');
     if (submitButton) submitButton.disabled = true;
 
     try {
-      const response = await fetch("./api/api_create_hash.php", {
-        // Ensure this path is correct
+      // Certifique-se que o caminho para sua API de cadastro está correto
+      const response = await fetch("api/api_create_hash.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -230,45 +294,29 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify(formDataObject),
       });
 
-      const result = await response.json(); // Expecting JSON response from PHP
+      const result = await response.json();
 
       if (result.success) {
         alert(result.message || "Cadastro realizado com sucesso!");
 
-        // Simulate saving user to localStorage to update menu
-        // In a real app, you might get user data back from the API or redirect to login
-        if (nomeInput && emailInput) {
-          const nomeUsuario = nomeInput.value.split(" ")[0];
-          const emailUsuario = emailInput.value;
-          localStorage.setItem(
-            "usuario",
-            JSON.stringify({ nome: nomeUsuario, email: emailUsuario })
-          );
-          atualizarMenuUsuario();
-        }
+        // Após cadastro bem-sucedido, o usuário normalmente NÃO é logado automaticamente
+        // Ele deve ir para a página de login.
+        // Apenas limpamos o formulário e talvez redirecionamos para o login.
+        // Não setamos 'usuario' no localStorage aqui, pois não temos o ID do usuário ainda.
 
         form.reset();
         clearAddressFields();
 
         if (senhaInput) {
           senhaInput.type = "password";
-          const senhaIconSpan = document.getElementById("iconeSenha");
-          if (senhaIconSpan) {
-            senhaIconSpan.classList.remove("bi-eye-slash");
-            senhaIconSpan.classList.add("bi-eye");
-          }
+          // Lógica para resetar ícone de senha (se necessário)
         }
         if (confirmarSenhaInput) {
           confirmarSenhaInput.type = "password";
-          const cSenhaIcon = document.getElementById("iconeConfirmaSenha");
-          if (cSenhaIcon) {
-            cSenhaIcon.classList.remove("bi-eye-slash");
-            cSenhaIcon.classList.add("bi-eye");
-          }
+          // Lógica para resetar ícone de confirmação de senha (se necessário)
         }
-        if (nomeInput) nomeInput.focus();
-        // Optionally redirect to login page or user dashboard
-        // window.location.href = 'login.html';
+        // Redirecionar para a página de login após cadastro
+        window.location.href = "login.html";
       } else {
         alert(
           "Erro no cadastro: " +
@@ -279,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Erro ao enviar formulário:", error);
       alert("Erro ao conectar com o servidor. Tente novamente mais tarde.");
     } finally {
-      if (submitButton) submitButton.disabled = false; // Re-enable submit button
+      if (submitButton) submitButton.disabled = false;
     }
   });
 });
