@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados
-require_once __DIR__ . '/../db_config/config.php';
+require_once 'banco_connect.php';
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         $produto_id = intval($data['produto_id']);
 
         // Preparando a consulta SQL
-        $sql = "DELETE FROM Pizzas WHERE produto_id = ?";
+        $sql = "DELETE FROM Produtos WHERE produto_id = ?";
         $stmt = $conn->prepare($sql);
 
         // Verifica se a consulta foi preparada corretamente
@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             if ($stmt->execute()) {
                 // Verifica se algum registro foi afetado
                 if ($stmt->affected_rows > 0) {
-                    echo json_encode(array("success" => true, "message" => "Pizza excluída com sucesso."));
+                    echo json_encode(array("success" => true, "message" => "Produto excluído com sucesso."));
                 } else {
-                    echo json_encode(array("success" => false, "message" => "Nenhuma pizza encontrada com o ID fornecido."));
+                    echo json_encode(array("success" => false, "message" => "Nenhuma produto encontrada com o ID fornecido."));
                 }
             } else {
                 echo json_encode(array("success" => false, "message" => "Erro de banco de dados: " . $stmt->error));

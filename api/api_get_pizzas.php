@@ -1,52 +1,86 @@
 <?php
 header('Content-Type: application/json');
 
-// Configurações do banco de dados
-$host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
-$dbname = 'wesley'; // Nome do banco de dados
-$username = 'wesley'; // Nome de usuário do banco de dados
-$password = 'tI7u96pYDAv3I#'; // Senha do banco de dados
+$host = 'wesley.mysql.dbaas.com.br';
+$dbname = 'wesley';
+$username = 'wesley';
+$password = 'tI7u96pYDAv3I#';
 
-// Conectar ao banco de dados usando mysqli
 $conexao = mysqli_connect($host, $username, $password, $dbname);
 
-// Verificar se a conexão foi bem-sucedida
 if (!$conexao) {
-    echo json_encode(array(
-        'error' => true,
-        'message' => 'Erro de conexão: ' . mysqli_connect_error()
-    ));
+    echo json_encode(['success' => false, 'message' => 'Erro de conexão: ' . mysqli_connect_error()]);
     exit;
 }
 
-mysqli_set_charset($conexao, "utf8"); // Configurar o charset para UTF-8
+mysqli_set_charset($conexao, "utf8");
 
-// Query para buscar os dados
-$query = "SELECT * FROM Pizzas";
+// Verifica se foi passado ?categorias=4,6
+if (isset($_GET['categorias'])) {
+    $categorias = explode(',', $_GET['categorias']);
+    $categorias = array_map('intval', $categorias); // Sanitiza os valores
+    $placeholders = implode(',', array_fill(0, count($categorias), '?'));
 
-// Executar a consulta
-$resultado = mysqli_query($conexao, $query);
+    $query = "
+        SELECT 
+            p.produto_id, p.nome, p.ingredientes, p.detalhes, p.pequena, p.media, p.grande, 
+            p.media_inteira, p.grande_inteira, p.caminho, p.categoria_id, c.categoria AS categoria
+        FROM Produtos p
+        INNER JOIN Categoria c ON p.categoria_id = c.categoria_id
+        WHERE p.categoria_id IN ($placeholders)
+    ";
 
-// Verificar se houve resultados
-if ($resultado && mysqli_num_rows($resultado) > 0) {
-    // Inicializar um array para armazenar os resultados
-    $usuarios = array();
+    // Preparar e executar manualmente com bind dinâmico
+    $stmt = $conexao->prepare($query);
 
-    // Buscar os resultados um por um e adicionar ao array
-    while ($row = mysqli_fetch_assoc($resultado)) {
-        $usuarios[] = $row;
-    }
+    // Cria os tipos (ex: "ii" para 2 inteiros)
+    $tipos = str_repeat('i', count($categorias));
 
-    // Retornar os dados em formato JSON
-    echo json_encode($usuarios);
+    // Bind dinâmico
+    $stmt->bind_param($tipos, ...$categorias);
+
+} elseif (isset($_GET['categoria_id'])) {
+    // Caso individual: ?categoria_id=4
+    $categoria_id = intval($_GET['categoria_id']);
+    
+    $query = "
+        SELECT 
+            p.produto_id, p.nome, p.ingredientes, p.detalhes, p.pequena, p.media, p.grande, 
+            p.media_inteira, p.grande_inteira, p.caminho, p.categoria_id, c.categoria AS categoria
+        FROM Produtos p
+        INNER JOIN Categoria c ON p.categoria_id = c.categoria_id
+        WHERE p.categoria_id = ?
+    ";
+
+    $stmt = $conexao->prepare($query);
+    $stmt->bind_param("i", $categoria_id);
 } else {
-    // Caso não haja registros, retorna uma mensagem
-    echo json_encode(array(
-        'error' => false,
-        'message' => 'Nenhum registro encontrado.'
-    ));
+    // Sem filtro (retorna todos)
+    $query = "
+        SELECT 
+            p.produto_id, p.nome, p.ingredientes, p.detalhes, p.pequena, p.media, p.grande, 
+            p.media_inteira, p.grande_inteira, p.caminho, p.categoria_id, c.categoria AS categoria
+        FROM Produtos p
+        INNER JOIN Categoria c ON p.categoria_id = c.categoria_id
+    ";
+    $stmt = $conexao->prepare($query);
 }
 
-// Fechar a conexão
-mysqli_close($conexao);
+$stmt->execute();
+$resultado = $stmt->get_result();
+
+$produtos = [];
+
+while ($row = $resultado->fetch_assoc()) {
+    $produtos[] = $row;
+}
+
+echo json_encode([
+    'success' => true,
+    'produtos' => $produtos,
+    'message' => count($produtos) ? 'Produtos encontrados.' : 'Nenhum produto encontrado.'
+]);
+
+$stmt->close();
+$conexao->close();
 ?>

@@ -192,54 +192,22 @@ $erro = "Preencha todos os campos obrigatórios.";
 
   <div class="main">
     <div class="sidebar">
-      <a href="#home">HOME</a>
-      <a href="#colaboradores">COLABORADORES</a>
-      <a href="#produtos">PRODUTOS</a>
-      <a href="#pedidos">PEDIDOS</a>
+      <ul>
+        <!-- FUTURAMENTE HOME DEVERÁ SER LISTA DOS PEDIDOS -->
+        <li><a href="adminDash.php">Home</a></li> 
+        <li><a href="novo-colaborador.php">Colaboradores</a></li>
+        <li><a href="editar-pizzas.php">Pizzas</a></li>
+        <li><a href="editar-bebidas.php">Bebidas</a></li>
+        <li><a href="editar-sobremesas.php">Sobremesas</a></li>
+        <!-- <li><a href="#">Pedidos</a></li> -->
+      </ul>
     </div>
 
     <div class="content">
-      <div class="top-action">
-        <button class="button-orange">INSERIR NOVO COLABORADOR</button>
-      </div>
+      <h2>Todos os Pedidos</h2>
+      <p>Visualize abaixo todos os pedidos cadastrados no sistema.</p>
 
-      <h2>COLABORADORES</h2>
-      <!--
-      <?php //if ($mensagem): ?>
-        <div class="mensagem sucesso"><?= htmlspecialchars($mensagem) ?></div>
-      <?php //elseif ($erro): ?>
-        <div class="mensagem erro"><?= htmlspecialchars($erro) ?></div>
-      <?php //endif; ?>
-      -->
-      <form method="post">
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" name="nome" placeholder="Nome completo do colaborador" required>
-        </div>
-        <div class="form-group">
-          <label for="funcao">Função</label>
-          <input type="text" id="funcao" name="funcao" placeholder="Cargo ou função" required>
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail Login</label>
-          <input type="email" id="email" name="email" placeholder="email@exemplo.com" required>
-        </div>
-        <div class="form-group">
-          <label for="senha_atual">Senha Atual</label>
-          <input type="password" id="senha_atual" name="senha_atual"
-            placeholder="Senha atual (ou deixe em branco se for novo)">
-        </div>
-        <div class="form-group">
-          <label for="nova_senha">Nova Senha</label>
-          <input type="password" id="nova_senha" name="nova_senha" placeholder="Nova senha" required>
-        </div>
-        <div class="form-group">
-          <label for="confirmar_senha">Confirmação de Senha</label>
-          <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Confirme a nova senha"
-            required>
-        </div>
-        <button class="button-orange" type="submit">SALVAR</button>
-      </form>
+      <div id="tabelaPedidos">🔄 Carregando pedidos...</div>
     </div>
   </div>
 
@@ -247,6 +215,77 @@ $erro = "Preencha todos os campos obrigatórios.";
     <p>Contato: (19) 7070-7070 | pizzaria@fatiasesabores.com</p>
     <p>Fatias & Sabores &copy; 2025</p>
   </footer>
+
+<script>
+  async function carregarTodosPedidos() {
+    const div = document.getElementById("tabelaPedidos");
+    div.innerHTML = "🔄 Carregando...";
+
+    try {
+      const res = await fetch("../api/api_get_all_pedidos.php");
+      const pedidos = await res.json();
+
+      if (pedidos.error) {
+        div.innerHTML = `<p style="color:red;">❌ ${pedidos.message}</p>`;
+        return;
+      }
+
+      if (pedidos.length === 0) {
+        div.innerHTML = "<p style='color:gray;'>Nenhum pedido encontrado.</p>";
+        return;
+      }
+
+      let html = `
+        <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
+          <thead style="background-color: #FFA831; color: #fff;">
+            <tr>
+              <th>ID</th>
+              <th>Nº Pedido</th>
+              <th>Data</th>
+              <th>Total (R$)</th>
+              <th>Status</th>
+              <th>Pagamento</th>
+              <th>Produto</th>
+              <th>Qtd</th>
+              <th>Tam.</th>
+              <th>Tipo Tam.</th>
+              <th>Troco</th>
+              <th>Obs</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      pedidos.forEach(p => {
+        html += `
+          <tr>
+            <td>${p.pedido_id}</td>
+            <td>${p.n_pedido}</td>
+            <td>${new Date(p.data_pedido).toLocaleString('pt-BR')}</td>
+            <td>${parseFloat(p.total).toFixed(2)}</td>
+            <td>${p.status}</td>
+            <td>${p.forma_pagamento}</td>
+            <td>${p.produto_id}</td>
+            <td>${p.quantidade}</td>
+            <td>${p.tamanho || '-'}</td>
+            <td>${p.tipo_tamanho || '-'}</td>
+            <td>${p.troco_para ? parseFloat(p.troco_para).toFixed(2) : '-'}</td>
+            <td>${p.obs || '-'}</td>
+          </tr>
+        `;
+      });
+
+      html += "</tbody></table>";
+      div.innerHTML = html;
+    } catch (err) {
+      div.innerHTML = `<p style="color:red;">❌ Erro ao carregar pedidos: ${err.message}</p>`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", carregarTodosPedidos);
+</script>
+
+
 </body>
 
 </html>

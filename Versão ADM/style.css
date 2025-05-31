@@ -1,0 +1,200 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #fff;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFA831;
+  padding: 10px 30px;
+}
+
+.topo nav a {
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.logo img {
+  height: 50px;
+}
+
+.admin-container {
+  display: flex;
+}
+
+.menu-lateral {
+  background-color: #FFA831;
+  padding: 20px;
+  width: 200px;
+  color: white;
+}
+
+.menu-lateral ul {
+  list-style: none;
+  padding: 0;
+}
+
+.menu-lateral ul li a {
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: 10px 0;
+}
+
+.conteudo {
+  flex-grow: 1;
+  padding: 40px;
+}
+
+.conteudo h2 {
+  color: #FFA831;
+}
+
+.formulario {
+  margin-top: 20px;
+}
+
+.formulario label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.formulario input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.formulario button {
+  background-color: #FFA831;
+  color: white;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.rodape {
+  background-color: #FFA831;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+
+.form-edicao-produto {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin-top: 20px;
+}
+
+.form-edicao-produto label {
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.form-edicao-produto input,
+.form-edicao-produto select,
+.form-edicao-produto textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-family: inherit;
+}
+
+.form-edicao-produto textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.botao-principal {
+  background-color: #FFA831;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botao-principal:hover {
+  background-color: #e48d1b;
+}
+
+.descricao-pequena {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.lista-produtos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5em;
+  padding: 1em 0;
+}
+
+.card-produto {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-produto:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.card-produto img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.card-produto h4 {
+  margin: 0.75em 0 0.4em;
+  font-size: 1.1em;
+  color: #333;
+  text-align: center;
+}
+
+.card-produto p {
+  font-size: 0.95em;
+  color: #555;
+  padding: 0 1em 1em;
+  text-align: center;
+}
+
+.card-header {
+  position: relative;
+}
+
+.btn-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: #d11a2a;
+  transition: transform 0.2s;
+}
+
+.btn-delete:hover {
+  transform: scale(1.2);
+  color: #a0001e;
+}

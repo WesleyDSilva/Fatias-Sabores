@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados
-require_once __DIR__ . '/../db_config/config.php';
+require_once 'banco_connect.php';
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
