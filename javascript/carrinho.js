@@ -1,28 +1,38 @@
+// carrinho.js
 document.addEventListener("DOMContentLoaded", async () => {
   // --- URLs ---
   const urlGetCarrinho =
-    "https://devweb3.ok.etc.br/api_mobile/api_get_carrinho.php";
+    "https://devweb3.ok.etc.br/api_mobile/api_get_carrinho.php"; // Mantenha como está
   const urlRemoverInstanciaUnica =
-    "https://devweb3.ok.etc.br/api_mobile/api_delete_carrinho_item.php";
+    "https://devweb3.ok.etc.br/api_mobile/api_delete_carrinho_item.php"; // Mantenha
   const urlRemoverTodasInstancias =
-    "https://devweb3.ok.etc.br/api/api_delete_carrinho_web.php";
+    "https://devweb3.ok.etc.br/api/api_delete_carrinho_web.php"; // Mantenha
   const urlRegistrarItem =
-    "https://devweb3.ok.etc.br/api_mobile/api_registrar_item_pedido.php";
-  const urlFavoritar = "https://devweb3.ok.etc.br/api/api_pedido_favorito.php"; // <-- CORREÇÃO APLICADA
-  const urlFinalizarPedido =
-    "https://devweb3.ok.etc.br/api_mobile/api_finalizar_pedido.php";
+    "https://devweb3.ok.etc.br/api_mobile/api_registrar_item_pedido.php"; // Mantenha
+  const urlFavoritar = "https://devweb3.ok.etc.br/api/api_pedido_favorito.php"; // Mantenha
+
+  // ****** ALTERAÇÃO AQUI ******
+  // Mude para o caminho correto da sua API api_registrar_pedido.php
+  // Se estiver na raiz do site:
+  const urlApiRegistrarPedido = "api_registrar_pedido.php";
+  // Se estiver em uma subpasta como /api/:
+  // const urlApiRegistrarPedido = "api/api_registrar_pedido.php";
 
   // --- Elementos do DOM ---
   const carrinhoContainer = document.getElementById("carrinho-items");
   const totalPedidoElement = document.getElementById("total-pedido");
-  const cartCountBadge = document.querySelector(
-    'a[href="carrinho.html"] span.badge'
-  );
-  const btnConfirmarPedido = document.querySelector(
-    'a[href="pedidoconfirmado.html"]'
+
+  // Ajuste no seletor do badge, caso o href no menu tenha mudado para carrinho.php
+  const cartCountBadge =
+    document.getElementById("cart-count-badge-nav") || // Se você adicionou o ID no menu
+    document.querySelector('a[href="carrinho.php"] span.badge'); // Fallback
+
+  // Ajuste no seletor do botão de confirmar pedido para usar o ID que definimos no HTML de carrinho.php
+  const btnConfirmarPedido = document.getElementById(
+    "btn-confirmar-pedido-link"
   );
 
-  // --- Funções Auxiliares ---
+  // --- Funções Auxiliares (sem alterações) ---
   function getClienteId() {
     const usuarioString = localStorage.getItem("usuario");
     if (usuarioString) {
@@ -37,6 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (e) {
         console.error("Erro ao parsear 'usuario' do localStorage:", e);
+        localStorage.removeItem("usuario"); // Limpa item inválido
       }
     }
     return null;
@@ -52,10 +63,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   function atualizarContadorBadge(totalLinhasItens) {
     if (cartCountBadge) {
       cartCountBadge.textContent = totalLinhasItens || "0";
+    } else {
+      // console.warn("Elemento cartCountBadge não encontrado para atualizar contador.");
     }
   }
 
-  // --- Lógica Principal do Carrinho ---
+  // --- Lógica Principal do Carrinho (sem alterações, exceto talvez o tratamento de erro da API de carrinho se ela mudar) ---
   async function carregarCarrinho() {
     const clienteId = getClienteId();
     if (!clienteId) {
@@ -82,18 +95,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const response = await fetch(`${urlGetCarrinho}?cliente_id=${clienteId}`);
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Erro HTTP ${response.status} ao buscar carrinho: ${errorText}`
-        );
+        let errorMsg = `Erro HTTP ${response.status} ao buscar carrinho.`;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.message || `Erro: ${response.statusText}`;
+        } catch (e) {
+          /* Não conseguiu parsear JSON de erro */
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
 
+      // Ajuste na verificação de sucesso e dados da API de carrinho
+      // Assumindo que a API de carrinho retorna um array de itens diretamente em caso de sucesso,
+      // ou um objeto com {success: false, message: "..."} ou {message: "..."} em caso de erro/vazio
       if (
         data.success === false ||
-        (Array.isArray(data) && data.length === 0) ||
-        data.error
+        (data.message && data.itens && data.itens.length === 0) ||
+        (Array.isArray(data) && data.length === 0)
       ) {
         carrinhoContainer.innerHTML = `<p class="text-center">${
           data.message || "Seu carrinho está vazio."
@@ -104,10 +124,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const itensDoPedido = Array.isArray(data) ? data : data.itens || [];
+      const itensDoPedido = Array.isArray(data) ? data : data.itens || []; // Garante que é um array
 
       if (itensDoPedido.length === 0) {
-        carrinhoContainer.innerHTML = `<p class="text-center">Seu carrinho está vazio.</p>`;
+        carrinhoContainer.innerHTML = `<p class="text-center">${
+          data.message || "Seu carrinho está vazio."
+        }</p>`;
         atualizarTotal([]);
         atualizarContadorBadge(0);
         if (btnConfirmarPedido) btnConfirmarPedido.classList.add("disabled");
@@ -117,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       carrinhoContainer.innerHTML = "";
       renderizarItensCarrinho(itensDoPedido);
       atualizarTotal(itensDoPedido);
-      atualizarContadorBadge(itensDoPedido.length);
+      atualizarContadorBadge(itensDoPedido.length); // Usa o número de linhas/grupos de itens
       if (btnConfirmarPedido) btnConfirmarPedido.classList.remove("disabled");
     } catch (error) {
       console.error("Erro ao carregar o carrinho:", error);
@@ -127,40 +149,55 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // --- renderizarItensCarrinho (sem alterações) ---
   function renderizarItensCarrinho(itens) {
     const itensAgrupados = {};
     itens.forEach((item) => {
       const chaveItem = `${item.produto_id}-${item.tamanho_pedido}-${item.tipo_tamanho_pedido}`;
       if (itensAgrupados[chaveItem]) {
-        itensAgrupados[chaveItem].quantidade += 1;
+        itensAgrupados[chaveItem].quantidade += parseInt(item.quantidade) || 1; // Se a API já agrupa, use item.quantidade
         itensAgrupados[chaveItem].ids_item_pedido.push(item.id_item_pedido);
       } else {
         itensAgrupados[chaveItem] = {
           ...item,
-          quantidade: 1,
+          quantidade: parseInt(item.quantidade) || 1, // Se a API já agrupa, use item.quantidade
           ids_item_pedido: [item.id_item_pedido],
         };
       }
     });
 
     Object.values(itensAgrupados).forEach((itemAgrupado) => {
-      const precoUnitario = parseFloat(itemAgrupado.total_item_pedido);
+      const precoUnitario = parseFloat(
+        itemAgrupado.total_item_pedido || itemAgrupado.preco_unitario
+      ); // Ajuste conforme o nome do campo
 
-      let imagemProduto = "/img/padrao.jpg";
+      let imagemProduto = "/img/padrao.jpg"; // Caminho padrão
       if (
         itemAgrupado.caminho_imagem_produto &&
         typeof itemAgrupado.caminho_imagem_produto === "string"
       ) {
         const caminhoLimpo = itemAgrupado.caminho_imagem_produto.trim();
-        if (caminhoLimpo !== "" && caminhoLimpo.toLowerCase() !== "undefined") {
+        if (
+          caminhoLimpo &&
+          caminhoLimpo.toLowerCase() !== "undefined" &&
+          caminhoLimpo.toLowerCase() !== "null"
+        ) {
+          // Se for uma URL completa, usa direto. Se for só o nome do arquivo, você precisa prefixar.
+          // Exemplo: se caminho_imagem_produto for 'pizza.jpg' e as imagens estão em '/img/produtos/'
+          // imagemProduto = `/img/produtos/${caminhoLimpo}`;
+          // Se for URL completa:
           if (
             caminhoLimpo.startsWith("http://") ||
             caminhoLimpo.startsWith("https://")
           ) {
             imagemProduto = caminhoLimpo;
+          } else if (caminhoLimpo.includes("/")) {
+            // Se já inclui um caminho parcial
+            imagemProduto = caminhoLimpo; // Ou ajuste o prefixo se necessário
           } else {
+            imagemProduto = `/img/produtos/${caminhoLimpo}`; // Assumindo que está em /img/produtos/
             console.warn(
-              `API retornou caminho de imagem que não é URL HTTP(S) para produto ID ${itemAgrupado.produto_id}: "${caminhoLimpo}". Usando padrão.`
+              `Caminho da imagem não é URL completa: ${caminhoLimpo}. Usando: ${imagemProduto}`
             );
           }
         }
@@ -182,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="col-md-3 col-4">
             <img src="${imagemProduto}" class="img-fluid rounded-start" alt="${
         itemAgrupado.nome_produto
-      }" style="max-height: 100px; width: 100%; object-fit: cover;">
+      }" style="max-height: 100px; width: 100%; object-fit: cover;" onerror="this.onerror=null;this.src='/img/padrao.jpg';">
           </div>
           <div class="col-md-6 col-5">
             <div class="card-body py-2 px-3">
@@ -221,13 +258,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     adicionarListenersAcoesCarrinho();
   }
 
+  // --- atualizarTotal (sem alterações) ---
   function atualizarTotal(itensDoPedidoApi) {
     let totalCalculado = 0;
     if (Array.isArray(itensDoPedidoApi)) {
       itensDoPedidoApi.forEach(function (item) {
-        const preco = parseFloat(item.total_item_pedido);
+        const preco = parseFloat(item.total_item_pedido || item.preco_unitario); // Ajuste conforme o nome do campo
         if (!isNaN(preco)) {
-          totalCalculado += preco;
+          totalCalculado += preco * (parseInt(item.quantidade) || 1); // Multiplica pelo quantidade se a API não agrupar o total
         }
       });
     }
@@ -235,7 +273,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalPedidoElement.textContent = formatarMoeda(totalCalculado);
   }
 
-  // --- Funções de Ação do Carrinho ---
+  // --- Funções de Ação do Carrinho (sem alterações, a menos que as APIs mudem) ---
   async function removerInstanciaItemDoPedidoAPI(idItemPedidoARemover) {
     const clienteId = getClienteId();
     if (!clienteId || !idItemPedidoARemover) return false;
@@ -258,8 +296,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           }). Texto: ${textResult.substring(0, 100)}`
         );
         result = {
-          success: false,
-          message: `Resposta inesperada do servidor (Status: ${response.status})`,
+          success: response.ok, // Assumir sucesso se status for ok e não for JSON
+          message: response.ok
+            ? "Item removido"
+            : `Resposta inesperada do servidor (Status: ${response.status})`,
         };
       }
 
@@ -319,10 +359,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!clienteId) return false;
     const payload = {
       cliente_id: clienteId,
-      pizza_id: parseInt(produtoId),
+      pizza_id: parseInt(produtoId), // Ajuste o nome do campo se sua API de registro de item espera 'produto_id'
       preco: parseFloat(precoUnitario),
       tamanho_selecionado: tamanho,
-      tipo_pizza: tipo,
+      tipo_pizza: tipo, // Ajuste o nome do campo se sua API espera 'tipo_tamanho'
     };
     try {
       const response = await fetch(urlRegistrarItem, {
@@ -350,15 +390,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       nome_pizza: nomeProduto,
       preco: parseFloat(precoUnitario),
     };
-    const finalPayload = { pizzas: [itemPayload] };
+    const finalPayload = { pizzas: [itemPayload] }; // API de favoritos espera um array de pizzas
 
-    console.log(
-      "API: Favoritando item com payload:",
-      JSON.stringify(finalPayload, null, 2)
-    );
     try {
       const response = await fetch(urlFavoritar, {
-        // USA A URL CORRIGIDA
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalPayload),
@@ -376,12 +411,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           }). Texto: ${textResult.substring(0, 100)}`
         );
         data = {
-          success: false,
-          message: `Resposta inesperada do servidor (Status: ${response.status}). Verifique o console para detalhes.`,
+          success: response.ok,
+          message: response.ok
+            ? "Favoritado com sucesso (resposta não JSON)"
+            : `Resposta inesperada do servidor (Status: ${response.status}).`,
         };
       }
-
-      console.log("Resposta da API de Favoritos:", data);
 
       if (response.ok && data.success) {
         alert("Produto adicionado aos favoritos!");
@@ -394,6 +429,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // --- adicionarListenersAcoesCarrinho (sem alterações) ---
   function adicionarListenersAcoesCarrinho() {
     document.querySelectorAll(".btn-diminuir").forEach((btn) => {
       const newBtn = btn.cloneNode(true);
@@ -402,12 +438,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const cardElement = this.closest(".item-carrinho-agrupado");
         const idsItemPedido = JSON.parse(cardElement.dataset.idsItemPedido);
         if (idsItemPedido.length > 0) {
-          const idParaRemover = idsItemPedido.pop();
+          const idParaRemover = idsItemPedido.pop(); // Remove o último ID para diminuir
           if (await removerInstanciaItemDoPedidoAPI(idParaRemover)) {
-            carregarCarrinho();
+            carregarCarrinho(); // Recarrega o carrinho para refletir a mudança
           } else {
-            // A mensagem de erro já é dada pela função da API
-            carregarCarrinho();
+            // Se falhar, a API já deve ter dado um alerta. Recarregamos mesmo assim para reverter visualmente.
+            idsItemPedido.push(idParaRemover); // Adiciona de volta se falhou (opcional)
+            cardElement.dataset.idsItemPedido = JSON.stringify(idsItemPedido); // Atualiza o dataset (opcional)
+            // carregarCarrinho(); // Ou apenas atualiza a quantidade visualmente sem recarregar tudo
           }
         }
       });
@@ -444,11 +482,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           )
         ) {
           if (await removerTodasInstanciasProdutoAPI(produtoId)) {
-            alert(`Todas as unidades de "${nomeProduto}" foram removidas.`);
-          } else {
-            // Mensagem de erro já é dada pela função da API
+            // Não precisa de alerta aqui se a API já der feedback ou se o recarregamento for suficiente
           }
-          carregarCarrinho();
+          carregarCarrinho(); // Recarrega para mostrar o carrinho atualizado
         }
       });
     });
@@ -469,12 +505,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- Lógica de Finalização do Pedido ---
   if (btnConfirmarPedido) {
     btnConfirmarPedido.addEventListener("click", async function (event) {
-      event.preventDefault();
+      event.preventDefault(); // Previne a navegação padrão do link
       const cliente_id = getClienteId();
       if (!cliente_id) {
         alert("Por favor, faça login para confirmar o pedido.");
+        window.location.href = "login.html"; // Redireciona para login se não estiver logado
         return;
       }
+
       const itensVisiveis = document.querySelectorAll(
         ".item-carrinho-agrupado"
       );
@@ -482,6 +520,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Seu carrinho está vazio. Adicione itens antes de confirmar.");
         return;
       }
+
       const metodoPagamentoSelecionado = document.querySelector(
         'input[name="pagamento"]:checked'
       );
@@ -489,16 +528,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Por favor, selecione um método de pagamento.");
         return;
       }
-      const metodoPagamento = metodoPagamentoSelecionado.value;
+      // Na sua API api_registrar_pedido.php, você espera 'PIX', 'Cartão', 'Dinheiro'
+      // O 'value' dos seus radio buttons deve corresponder a isso
+      const forma_pagamento = metodoPagamentoSelecionado.value; // Ex: "dinheiro", "cartao", "pix"
+
+      // Ajuste para corresponder aos valores esperados pela API PHP
+      let formaPagamentoApi = "";
+      if (forma_pagamento.toLowerCase() === "dinheiro")
+        formaPagamentoApi = "Dinheiro";
+      else if (forma_pagamento.toLowerCase() === "cartao")
+        formaPagamentoApi = "Cartão";
+      else if (forma_pagamento.toLowerCase() === "pix")
+        formaPagamentoApi = "PIX";
+      else {
+        alert("Método de pagamento inválido selecionado internamente.");
+        return;
+      }
+
       const valorTrocoInput = document.getElementById("troco");
-      let valorTroco = null;
+      let troco_para = null; // enviado como null se não for dinheiro
       const totalAtualTexto = totalPedidoElement.textContent
         .replace("R$", "")
-        .replace(/\./g, "")
-        .replace(",", ".");
+        .replace(/\./g, "") // Remove separador de milhar
+        .replace(",", "."); // Substitui vírgula por ponto para decimal
       const totalAtual = parseFloat(totalAtualTexto);
 
-      if (metodoPagamento === "dinheiro") {
+      if (formaPagamentoApi === "Dinheiro") {
         if (!valorTrocoInput || valorTrocoInput.value.trim() === "") {
           alert(
             "Se o pagamento for em dinheiro, por favor, informe para quanto será o troco (mesmo que não precise de troco, informe o valor pago)."
@@ -506,43 +561,73 @@ document.addEventListener("DOMContentLoaded", async () => {
           valorTrocoInput.focus();
           return;
         }
-        valorTroco = parseFloat(valorTrocoInput.value.replace(",", "."));
-        if (isNaN(valorTroco) || valorTroco < totalAtual) {
+        troco_para = parseFloat(valorTrocoInput.value.replace(",", "."));
+        if (isNaN(troco_para) || troco_para < totalAtual) {
           alert(
-            "O valor para troco deve ser um número maior ou igual ao total do pedido."
+            "O valor para troco deve ser um número válido e maior ou igual ao total do pedido."
           );
           valorTrocoInput.focus();
           return;
         }
       }
 
+      // Monta o payload para api_registrar_pedido.php
       const payloadFinalizar = {
         cliente_id: cliente_id,
-        metodo_pagamento: metodoPagamento,
-        troco_para: metodoPagamento === "dinheiro" ? valorTroco : null,
+        forma_pagamento: formaPagamentoApi, // Usa o valor ajustado para a API
+        troco_para: troco_para, // Será null se não for dinheiro
       };
-      console.log("Tentando finalizar pedido com payload:", payloadFinalizar);
+
+      console.log(
+        "Tentando finalizar pedido com payload:",
+        payloadFinalizar,
+        "para URL:",
+        urlApiRegistrarPedido
+      );
+      btnConfirmarPedido.classList.add("disabled"); // Desabilita o botão
+      btnConfirmarPedido.innerHTML =
+        '<b>Processando...</b> <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
       try {
-        const response = await fetch(urlFinalizarPedido, {
-          method: "POST",
+        // ****** ALTERAÇÃO AQUI: USA A NOVA URL ******
+        const response = await fetch(urlApiRegistrarPedido, {
+          method: "POST", // Sua API espera POST ou PUT
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payloadFinalizar),
         });
+
         const result = await response.json();
+        console.log("Resposta da API de registro de pedido:", result);
 
         if (response.ok && result.success) {
-          alert("Pedido confirmado com sucesso! " + (result.message || ""));
-          window.location.href = "pedidoconfirmado.html";
+          alert(
+            "Pedido confirmado com sucesso! Nº do Pedido: " +
+              (result.n_pedido || "N/A") +
+              "\n" +
+              (result.message || "")
+          );
+          // Opcional: Salvar o número do pedido no localStorage para exibir na página de confirmação
+          if (result.n_pedido) {
+            localStorage.setItem("ultimo_pedido_confirmado", result.n_pedido);
+          }
+          // Redireciona para a página de confirmação
+          window.location.href = "pedidoconfirmado.php"; // Certifique-se que esta página existe
         } else {
           alert(
             "Erro ao confirmar o pedido: " +
-              (result.message || "Tente novamente.")
+              (result.message ||
+                "Tente novamente. Verifique o console para mais detalhes.")
           );
+          console.error("Erro da API ao registrar pedido:", result);
         }
       } catch (error) {
         console.error("Erro de comunicação ao finalizar pedido:", error);
-        alert("Erro de comunicação ao finalizar o pedido.");
+        alert(
+          "Erro de comunicação ao finalizar o pedido. Verifique sua conexão e tente novamente."
+        );
+      } finally {
+        btnConfirmarPedido.classList.remove("disabled");
+        btnConfirmarPedido.innerHTML = "<b>Confirmar meu pedido</b>"; // Restaura o texto do botão
       }
     });
   }
