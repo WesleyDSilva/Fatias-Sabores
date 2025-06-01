@@ -10,7 +10,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data = json_decode(file_get_contents("php://input"), true);
+        $data = json_decode(file_get_contents("php://input"), true);       
 
         if (
             isset($data['nome']) &&
@@ -28,8 +28,15 @@ try {
             $senha = password_hash($data['senha'], PASSWORD_DEFAULT);
             $placa = $data['placa'] ?? null;
 
-            $stmt = $pdo->prepare("INSERT INTO Funcionarios (nome, cargo, telefone, perfil, login, senha, placa)
-                                   VALUES (:nome, :cargo, :telefone, :perfil, :login, :senha, :placa)");
+            $perfil = ($data['perfil'] === 'admin') ? 1 : 0;
+
+            $nivelAdmin = null;
+            if ($perfil === 1) {
+                $nivelAdmin = isset($data['nivel_admin']) ? intval($data['nivel_admin']) : 3;
+            }
+
+            $stmt = $pdo->prepare("INSERT INTO Funcionarios (nome, cargo, telefone, perfil, login, senha, placa, nivel_admin)
+                       VALUES (:nome, :cargo, :telefone, :perfil, :login, :senha, :placa, :nivel_admin)");
 
             $stmt->bindParam(':nome', $nome);
             $stmt->bindParam(':cargo', $cargo);
@@ -38,6 +45,7 @@ try {
             $stmt->bindParam(':login', $email);
             $stmt->bindParam(':senha', $senha);
             $stmt->bindParam(':placa', $placa);
+            $stmt->bindParam(':nivel_admin', $nivelAdmin, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
                 echo json_encode(["success" => true, "message" => "Funcionário cadastrado com sucesso"]);

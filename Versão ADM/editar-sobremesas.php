@@ -21,16 +21,15 @@
   </header>
 
   <main class="admin-container">
-    <aside class="menu-lateral">
-      <h3>MENU</h3>
+    <?php include 'menu-lateral.php'; ?>
+      <!-- <h3>MENU</h3>
       <ul>
         <li><a href="adminDash.php">Home</a></li> 
         <li><a href="novo-colaborador.php">Colaboradores</a></li>
         <li><a href="editar-pizzas.php">Pizzas</a></li>
         <li><a href="editar-bebidas.php">Bebidas</a></li>
         <li><a href="editar-sobremesas.php">Sobremesas</a></li>
-      </ul>
-    </aside>
+      </ul> -->
 
     <section class="conteudo">
       <h2>SOBREMESAS</h2>

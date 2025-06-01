@@ -1,9 +1,11 @@
+/* Layout e Estrutura Básica */
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
+  font-family: Arial, sans-serif;
   background-color: #fff;
 }
 
+header,
 .topo {
   display: flex;
   justify-content: space-between;
@@ -12,24 +14,38 @@ body {
   padding: 10px 30px;
 }
 
+.logo img {
+  height: 60px;
+}
+
+nav a,
 .topo nav a {
   margin-left: 20px;
-  color: white;
   text-decoration: none;
+  font-weight: bold;
+  color: #333;
 }
 
-.logo img {
-  height: 50px;
+.admin-title {
+  background-color: #FFA831;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 10px;
 }
 
-.admin-container {
+.admin-container,
+.main {
   display: flex;
 }
 
-.menu-lateral {
+/* Menu Lateral */
+.menu-lateral,
+.sidebar {
+  width: 200px;
   background-color: #FFA831;
   padding: 20px;
-  width: 200px;
+  min-height: 100vh;
   color: white;
 }
 
@@ -38,75 +54,63 @@ body {
   padding: 0;
 }
 
-.menu-lateral ul li a {
-  color: black;
-  text-decoration: none;
+.menu-lateral ul li a,
+.sidebar a {
   display: block;
   padding: 10px 0;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
 }
 
-.conteudo {
+/* Conteúdo principal */
+.conteudo,
+.conteudo-categoria,
+.content {
   flex-grow: 1;
   padding: 40px;
 }
 
-.conteudo h2 {
+.conteudo-categoria {
+  padding: 100px;
+}
+
+.conteudo h2,
+.content h2 {
   color: #FFA831;
+  margin-bottom: 10px;
 }
 
-.formulario {
-  margin-top: 20px;
-}
-
-.formulario label {
-  display: block;
-  margin-bottom: 15px;
-}
-
-.formulario input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.formulario button {
-  background-color: #FFA831;
-  color: white;
-  padding: 10px 30px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.rodape {
-  background-color: #FFA831;
-  color: white;
-  text-align: center;
-  padding: 20px;
-}
-
-
+/* Formulários */
+.formulario,
 .form-edicao-produto {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   max-width: 400px;
-  margin-top: 20px;
 }
 
-.form-edicao-produto label {
-  margin: 10px 0 5px;
+.formulario label,
+.form-edicao-produto label,
+label {
+  display: block;
+  margin-bottom: 5px;
   font-weight: bold;
 }
 
+.formulario input,
 .form-edicao-produto input,
 .form-edicao-produto select,
-.form-edicao-produto textarea {
+.form-edicao-produto textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 10px;
-  margin-bottom: 15px;
+  border-radius: 8px;
   font-family: inherit;
+  margin-bottom: 15px;
 }
 
 .form-edicao-produto textarea {
@@ -114,87 +118,59 @@ body {
   height: 100px;
 }
 
-.botao-principal {
-  background-color: #FFA831;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 30px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.form-group {
+  margin-bottom: 15px;
 }
 
-.botao-principal:hover {
+/* Botões */
+.formulario button,
+.botao-principal,
+.button-orange {
+  background-color: #FFA831;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-top: 20px;
+}
+
+.botao-principal:hover,
+.button-orange:hover {
   background-color: #e48d1b;
 }
 
-.descricao-pequena {
-  font-size: 0.95rem;
-  color: #444;
+/* Mensagens de alerta */
+.mensagem {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
-.lista-produtos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5em;
-  padding: 1em 0;
+.mensagem.sucesso {
+  background: #d4edda;
+  color: #155724;
 }
 
-.card-produto {
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.mensagem.erro {
+  background: #f8d7da;
+  color: #721c24;
 }
 
-.card-produto:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-}
-
-.card-produto img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-bottom: 1px solid #eee;
-}
-
-.card-produto h4 {
-  margin: 0.75em 0 0.4em;
-  font-size: 1.1em;
-  color: #333;
+/* Rodapé */
+footer,
+.rodape {
+  background-color: #FFA831;
+  color: white;
   text-align: center;
+  padding: 20px;
 }
 
-.card-produto p {
-  font-size: 0.95em;
-  color: #555;
-  padding: 0 1em 1em;
-  text-align: center;
-}
-
-.card-header {
-  position: relative;
-}
-
-.btn-delete {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: transparent;
-  border: none;
-  font-size: 1.2em;
-  cursor: pointer;
-  color: #d11a2a;
-  transition: transform 0.2s;
-}
-
-.btn-delete:hover {
-  transform: scale(1.2);
-  color: #a0001e;
+/* Ações no topo da página */
+.top-action {
+  text-align: right;
+  margin-bottom: 20px;
 }

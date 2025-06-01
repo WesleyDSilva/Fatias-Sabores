@@ -1,0 +1,15 @@
+{"pedido_id":120,"status":"PENDENTE"}
+Array
+(
+    [pedido_id] => 120
+    [status] => PENDENTE
+)
+
+Array
+(
+)
+
+Array
+(
+)
+
