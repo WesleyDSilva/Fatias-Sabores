@@ -1,4 +1,29 @@
 <?php
+/**
+ * @api {post} /api_create_hash.php Criar novo cliente
+ * @apiName CriarCliente
+ * @apiGroup Cliente
+ *
+ * @apiBody {String} nome Nome completo do cliente
+ * @apiBody {String} logradouro Endereço (logradouro)
+ * @apiBody {String} cidade Cidade
+ * @apiBody {String} UF Unidade Federativa (Estado)
+ * @apiBody {String} cep CEP
+ * @apiBody {String} [complemento] Complemento do endereço (opcional)
+ * @apiBody {String} numero_casa Número da casa
+ * @apiBody {String} email Email do cliente
+ * @apiBody {String} telefone Telefone do cliente
+ * @apiBody {String} senha Senha (texto simples, será criptografada)
+ * @apiBody {String} cpf CPF do cliente
+ *
+ * @apiSuccess {Boolean} success Indica sucesso na criação
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: campos obrigatórios ausentes, erro no banco)
+ * @apiError {String} [error] Mensagem de erro do PDO (quando aplicável)
+ */
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

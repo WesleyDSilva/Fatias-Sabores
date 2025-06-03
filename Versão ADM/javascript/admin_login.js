@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Certifique-se de que este é o caminho CORRETO onde api_auth_funcionario.php está no servidor
       const apiUrl =
-        "https://devweb3.ok.etc.br/adm/api/api_auth_funcionario.php";
+        "api/api_auth_funcionario.php";
+      
 
       const payload = {
         login: loginValue,
@@ -52,63 +53,61 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify(payload),
         });
 
-        // Mesmo se response.ok for false (ex: 500), tentamos ler o corpo
-        // para ver se há uma mensagem de erro útil.
         const contentType = response.headers.get("content-type");
         let result;
-        let errorTextForDisplay = `Erro no servidor (Status: ${response.status}).`; // Mensagem padrão
+        let errorTextForDisplay = `Erro no servidor (Status: ${response.status}).`;
 
         if (contentType && contentType.includes("application/json")) {
           result = await response.json();
           if (result && result.message) {
-            errorTextForDisplay = result.message; // Usa a mensagem da API se for JSON
+            errorTextForDisplay = result.message;
           }
         } else {
-          const textResult = await response.text(); // Lê como texto se não for JSON
-          console.warn(
-            `Resposta da API de login não é JSON (Status: ${
-              response.status
-            }). Texto: ${textResult.substring(0, 500)}` // Loga mais texto
-          );
-          // Se textResult for HTML de erro, não é útil para o usuário,
-          // então errorTextForDisplay permanece a mensagem padrão.
-          // Se textResult for uma mensagem de erro simples, você pode tentar exibi-la.
+          const textResult = await response.text();
           if (
             textResult &&
             textResult.length < 200 &&
             !textResult.trim().startsWith("<")
           ) {
-            // Evita exibir HTML de erro grande
             errorTextForDisplay = textResult;
           }
         }
 
-        console.log(
-          "Resposta da API de login:",
-          result || "Resposta não JSON/Vazia"
-        );
+        console.log("Resposta da API de login:", result || "Resposta não JSON/Vazia");
 
         if (response.ok && result && result.success && result.user) {
+          // ✅ Só aqui você pode usar result.user!
+          // Grava no localStorage
           localStorage.setItem("funcionarioUser", JSON.stringify(result.user));
           if (result.token) {
             localStorage.setItem("funcionarioToken", result.token);
           }
 
+          // ✅ Agora sim, chama criar_sessao.php
+          await fetch("criar_sessao.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user: result.user }),
+          });
+
+          const perfil = result.user.perfil_id; // Certifique-se que é 'perfil_id' e não 'perfil'
+          const tipo = result.user.tipo_usuario;
+
           if (
-            result.user.tipo_usuario === "admin" ||
-            result.user.perfil === 1
+            perfil === 1 &&
+            (tipo === "admin" || tipo === "operacao" || tipo === "visualizacao")
           ) {
             alert("Login de administrador realizado com sucesso!");
             window.location.href = "adminDash.php";
           } else {
             displayError(
-              `Acesso permitido como ${
-                result.user.cargo || "funcionário"
-              }, mas esta área é apenas para administradores.`
+              `Acesso permitido como ${result.user.cargo || "funcionário"}, mas esta área é apenas para administradores.`
             );
           }
+
         } else {
-          // Usa a errorTextForDisplay que foi preparada
           displayError(
             result && result.message ? result.message : errorTextForDisplay
           );

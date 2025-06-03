@@ -1,4 +1,28 @@
 <?php
+/**
+ * @api {post} /api_create_pizzas.php Criar nova pizza/produto
+ * @apiName CriarPizza
+ * @apiGroup Produto
+ *
+ * @apiBody {String} nome Nome da pizza/produto (obrigatório)
+ * @apiBody {Number} categoria_id ID da categoria da pizza/produto (obrigatório)
+ * @apiBody {String} [ingredientes] Ingredientes da pizza/produto (opcional)
+ * @apiBody {String} [detalhes] Detalhes adicionais do produto (opcional)
+ * @apiBody {String} [caminho] Caminho da imagem do produto (opcional)
+ * @apiBody {Number} [pequena] Preço da pizza tamanho pequena (opcional)
+ * @apiBody {Number} [media] Preço da pizza tamanho média (opcional)
+ * @apiBody {Number} [grande] Preço da pizza tamanho grande (opcional)
+ * @apiBody {Number} [media_inteira] Preço da pizza média inteira (opcional)
+ * @apiBody {Number} [grande_inteira] Preço da pizza grande inteira (opcional)
+ *
+ * @apiSuccess {Boolean} success Indica sucesso na criação do produto
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: campos obrigatórios ausentes, erro na inserção)
+ * @apiError {String} [error] Mensagem de erro do PDO (quando aplicável)
+ */
+
 header('Content-Type: application/json');
 
 require_once 'banco_connect.php';

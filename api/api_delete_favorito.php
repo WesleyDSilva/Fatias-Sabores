@@ -1,4 +1,21 @@
-<?php
+<?
+/**
+ * @api {delete} /api_delete_favorito.php Remover pizza favorita do cliente
+ * @apiName DeleteFavorito
+ * @apiGroup Favoritos
+ *
+ * @apiParam {Number} pizza_id ID da pizza a ser removida dos favoritos (obrigatório)
+ * @apiParam {Number} cliente_id ID do cliente que deseja remover o favorito (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica sucesso da operação
+ * @apiSuccess {String} message Mensagem informando sucesso ou motivo da falha
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: IDs inválidos, erro no banco)
+ *
+ * @apiMethod DELETE
+ */
+
 // Conectar ao banco de dados
 $host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
 $dbname = 'wesley'; // Nome do banco de dados

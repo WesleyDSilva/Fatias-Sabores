@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $sql = "SELECT funcionario_id, nome, cargo, perfil, senha FROM Funcionarios WHERE login = ?";
+    $sql = "SELECT funcionario_id, nome, cargo, perfil, senha, nivel_admin FROM Funcionarios WHERE login = ?";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->num_rows === 1) {
         // Vincular colunas do resultado a variáveis PHP
         // A ordem deve corresponder EXATAMENTE à ordem das colunas no seu SELECT
-        $stmt->bind_result($funcionario_id_db, $nome_db, $cargo_db, $perfil_db, $senha_hash_db_bind);
+        $stmt->bind_result($funcionario_id_db, $nome_db, $cargo_db, $perfil_db, $senha_hash_db_bind, $nivel_admin_db);
 
         if ($stmt->fetch()) { // Buscar os dados para as variáveis vinculadas
 
@@ -107,16 +107,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // error_log("Senha fornecida pelo input para login '$login_input': " . $senha_input); // Cuidado ao logar senhas em claro
 
             if (password_verify($senha_input, $senha_hash_db_bind)) {
-                error_log("password_verify retornou TRUE para login '$login_input'");
                 http_response_code(200);
+
+                // Iniciar sessão com dados importantes
+                $_SESSION['funcionario_id'] = $funcionario_id_db;
+                $_SESSION['nome'] = $nome_db;
+                $_SESSION['cargo'] = $cargo_db;
+                $_SESSION['perfil_id'] = $perfil_db;
+                $_SESSION['nivel_admin'] = $nivel_admin_db;
+
+                // Define tipo do usuário para uso no menu, por exemplo
+                if ($nivel_admin_db == 1) {
+                    $_SESSION['tipo_usuario'] = 'admin';
+                } elseif ($nivel_admin_db == 2) {
+                    $_SESSION['tipo_usuario'] = 'operacao';
+                } elseif ($nivel_admin_db == 3) {
+                    $_SESSION['tipo_usuario'] = 'visualizacao';
+                } else {
+                    $_SESSION['tipo_usuario'] = 'visualizacao'; // fallback
+                }
+
 
                 $userData = [
                     "id" => $funcionario_id_db,
                     "nome" => $nome_db,
                     "cargo" => $cargo_db,
-                    "tipo_usuario" => ($perfil_db == 1) ? 'admin' : 'funcionario', // Ajuste o valor '1' se o perfil de admin for outro
-                    "perfil_id" => $perfil_db
+                    "tipo_usuario" => $_SESSION['tipo_usuario'],
+                    "perfil_id" => $perfil_db,
                 ];
+
                 $token = bin2hex(random_bytes(32));
                 echo json_encode([
                     "success" => true,

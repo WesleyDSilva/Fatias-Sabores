@@ -1,4 +1,23 @@
 <?php
+/**
+ * @api {post} /api_auth_hash.php Autenticar usuário cliente
+ * @apiName AutenticarCliente
+ * @apiGroup Cliente
+ *
+ * @apiBody {String} email Email do usuário
+ * @apiBody {String} senha Senha do usuário
+ *
+ * @apiSuccess {Boolean} success Indica sucesso
+ * @apiSuccess {String} message Mensagem de resultado
+ * @apiSuccess {Object} user Dados do usuário autenticado
+ * @apiSuccess {Number} user.id ID do usuário
+ * @apiSuccess {String} user.nome Nome do usuário
+ * @apiSuccess {String} user.email Email do usuário
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: email não encontrado, senha incorreta, JSON inválido)
+ */
+
 header("Content-Type: application/json");
 
 // Configuração do banco de dados

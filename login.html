@@ -202,7 +202,7 @@
             // 1. Chamar sua API de autenticação (api_auth_hash.php)
             // Certifique-se que o caminho para 'api_auth_hash.php' está correto
             // Se login.html e api_auth_hash.php estão na raiz do site, 'api_auth_hash.php' está ok.
-            const authResponse = await fetch('/api/api_auth_hash.php', {
+            const authResponse = await fetch('api/api_auth_hash.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,6 +1,6 @@
 <?php
 /*
-session_start();
+// session_start();
 if (!isset($_SESSION['admin_logado'])) {
 header('Location: adminDash.php');
 exit;
@@ -50,6 +50,8 @@ if ($existe) {
 $erro = "Preencha todos os campos obrigatórios.";
 }
 }*/
+
+require_once 'verifica_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -188,19 +190,19 @@ $erro = "Preencha todos os campos obrigatórios.";
 
   </header>
 
-  <div class="admin-title">Administrador</div>
+  <div class="admin-title">Dashboard</div>
 
   <div class="main">
     <div class="sidebar">
-      <ul>
-        <!-- FUTURAMENTE HOME DEVERÁ SER LISTA DOS PEDIDOS -->
+      <?php include 'menu-lateral.php'; ?>
+
+      <!-- <ul>
         <li><a href="adminDash.php">Home</a></li> 
         <li><a href="novo-colaborador.php">Colaboradores</a></li>
         <li><a href="editar-pizzas.php">Pizzas</a></li>
         <li><a href="editar-bebidas.php">Bebidas</a></li>
         <li><a href="editar-sobremesas.php">Sobremesas</a></li>
-        <!-- <li><a href="#">Pedidos</a></li> -->
-      </ul>
+      </ul> -->
     </div>
 
     <div class="content">
@@ -217,6 +219,7 @@ $erro = "Preencha todos os campos obrigatórios.";
   </footer>
 
 <script>
+  const tipoUsuario = "<?= $_SESSION['tipo_usuario'] ?>"; 
   async function carregarTodosPedidos() {
     const div = document.getElementById("tabelaPedidos");
     div.innerHTML = "🔄 Carregando...";
@@ -263,7 +266,16 @@ $erro = "Preencha todos os campos obrigatórios.";
             <td>${p.n_pedido}</td>
             <td>${new Date(p.data_pedido).toLocaleString('pt-BR')}</td>
             <td>${parseFloat(p.total).toFixed(2)}</td>
-            <td>${p.status}</td>
+            <td>
+            ${["admin", "operacao"].includes(tipoUsuario) ? `
+              <select onchange="atualizarStatus(${p.pedido_id}, this.value)">
+              <option value="PENDENTE" ${p.status === 'PENDENTE' ? 'selected' : ''}>PENDENTE</option>
+              <option value="PREPARAÇÃO" ${p.status === 'PREPARAÇÃO' ? 'selected' : ''}>PREPARAÇÃO</option>
+              <option value="ENTREGUE" ${p.status === 'ENTREGUE' ? 'selected' : ''}>ENTREGUE</option>
+              <option value="CANCELADO" ${p.status === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
+            </select>
+            ` : p.status}
+          </td>
             <td>${p.forma_pagamento}</td>
             <td>${p.produto_id}</td>
             <td>${p.quantidade}</td>
@@ -283,9 +295,20 @@ $erro = "Preencha todos os campos obrigatórios.";
   }
 
   document.addEventListener("DOMContentLoaded", carregarTodosPedidos);
+
+  function atualizarStatus(pedido_id, novo_status) {
+    const url = `../api/api_update_status_pedido.php?pedido_id=${pedido_id}&status=${encodeURIComponent(novo_status)}`;
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+        if (!data.success) location.reload();
+      })
+      .catch(() => {
+        alert("Erro na requisição.");
+        location.reload();
+      });
+  }
 </script>
-
-
 </body>
-
 </html>

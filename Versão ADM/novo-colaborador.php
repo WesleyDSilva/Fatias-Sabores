@@ -1,5 +1,6 @@
 <?php
 // novo_colaborador.php
+require_once 'verifica_sessao.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -24,7 +25,8 @@
   </header>
 
   <main class="admin-container">
-    <aside class="menu-lateral">
+    <?php include 'menu-lateral.php'; ?>
+    <!-- <aside class="menu-lateral">
       <h3>MENU</h3>
       <ul>
         <li><a href="adminDash.php">Home</a></li> 
@@ -33,7 +35,7 @@
         <li><a href="editar-bebidas.php">Bebidas</a></li>
         <li><a href="editar-sobremesas.php">Sobremesas</a></li>
       </ul>
-    </aside>
+    </aside> -->
 
     <section class="conteudo">
       <h2>NOVO COLABORADOR</h2>
@@ -44,10 +46,18 @@
         <label>Telefone<br/><input type="text" name="telefone" required /></label><br/>
         <label>Perfil<br/>
           <select name="perfil" required>
-            <option value="admin">Administrador</option>
             <option value="colaborador">Colaborador</option>
+            <option value="admin">Administrador</option>
           </select>
         </label><br/>
+        <label id="nivelAdminLabel" style="display:none;">
+        Nível do Administrador<br/>
+        <select name="nivel_admin">
+          <option value="1">1 - Master</option>
+          <option value="2">2 - Operacional</option>
+          <option value="3" selected>3 - Visualização</option>
+        </select>
+      </label><br/>
         <label>Placa<br/><input type="text" name="placa" /></label><br/>
         <label>E-mail Login<br/><input type="email" name="email" required /></label><br/>
         <label>Senha<br/><input type="password" name="senha" required /></label><br/>
@@ -101,8 +111,12 @@
         perfil: form.perfil.value,
         email: form.email.value,
         senha: senha,
-        placa: form.placa.value || null
+        placa: form.placa.value || null,
       };
+
+      if (form.perfil.value === "admin") {
+        colaborador.nivel_admin = parseInt(form.nivel_admin.value);
+      }
 
       try {
         const res = await fetch('../api/api_create_colaboradores.php', {
@@ -188,6 +202,16 @@
 
       // Carrega ao abrir a página
       window.addEventListener("DOMContentLoaded", () => carregarColaboradores());
+    </script>
+    <script>
+    document.querySelector('select[name="perfil"]').addEventListener('change', function () {
+      const nivelAdminField = document.getElementById("nivelAdminLabel");
+      if (this.value === "admin") {
+        nivelAdminField.style.display = "block";
+      } else {
+        nivelAdminField.style.display = "none";
+      }
+    });
     </script>
 </body>
 </html>

@@ -1,4 +1,44 @@
 <?php
+/**
+ * @api {post} /api_registrar_carrinho.php Adicionar pizza ao carrinho
+ * @apiName AdicionarCarrinho
+ * @apiGroup Carrinho
+ *
+ * @apiDescription Adiciona uma pizza ao carrinho de um cliente.
+ *
+ * @apiHeader {String} Content-Type application/json
+ *
+ * @apiParam {Number} cliente_id ID do cliente (obrigatório)
+ * @apiParam {Number} pizza_id ID da pizza (obrigatório)
+ * @apiParam {Number} preco Preço da pizza (obrigatório)
+ * @apiParam {String} nome_pizza Nome da pizza (obrigatório)
+ * @apiParam {String="inteira","fatia"} [tipo_pizza="inteira"] Tipo da pizza (opcional, padrão: "inteira")
+ *
+ * @apiSuccess {Boolean} success Indica se a pizza foi adicionada com sucesso
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Pizza adicionada ao carrinho com sucesso."
+ *  }
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro
+ *
+ * @apiErrorExample {json} Dados incompletos
+ *  {
+ *    "success": false,
+ *    "message": "Dados incompletos fornecidos."
+ *  }
+ *
+ * @apiErrorExample {json} Método inválido
+ *  {
+ *    "success": false,
+ *    "message": "Método inválido. Use POST."
+ *  }
+ */
+
 // Configuração do banco de dados
 $host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
 $database = 'wesley'; // Nome do banco de dados
