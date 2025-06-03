@@ -1,4 +1,44 @@
 <?php
+/**
+ * @api {post} /api_pedido_favorito.php Registrar pedido favorito
+ * @apiName RegistrarPedidoFavorito
+ * @apiGroup PedidoFavorito
+ * 
+ * @apiDescription Registra um pedido favorito para um cliente. Recebe um JSON no corpo da requisição com uma lista de pizzas, mas utiliza apenas a primeira.
+ * 
+ * @apiHeader {String} Content-Type application/json
+ * 
+ * @apiParam {Object[]} pizzas Lista de pizzas (array com pelo menos um item).
+ * @apiParam {Number} pizzas[].cliente_id ID do cliente (obrigatório).
+ * @apiParam {Number} pizzas[].pizza_id ID da pizza (obrigatório).
+ * @apiParam {String} pizzas[].nome_pizza Nome da pizza (obrigatório).
+ * @apiParam {Number} pizzas[].preco Preço da pizza (obrigatório).
+ * 
+ * @apiSuccess {Boolean} success Indica sucesso da operação.
+ * @apiSuccess {String} message Mensagem detalhando o resultado.
+ * 
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Pedido favorito registrado com sucesso."
+ *  }
+ * 
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem de erro ou motivo da falha.
+ * 
+ * @apiErrorExample {json} Campos não preenchidos
+ *  {
+ *    "success": false,
+ *    "message": "Campos obrigatórios não preenchidos."
+ *  }
+ * 
+ * @apiErrorExample {json} Método inválido
+ *  {
+ *    "success": false,
+ *    "message": "Método inválido. Use POST para registrar pedidos favoritos."
+ *  }
+ */
+
 // Configuração do banco de dados
 $host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
 $dbname = 'wesley'; // Nome do banco de dados

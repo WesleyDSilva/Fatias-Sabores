@@ -1,4 +1,19 @@
 <?php
+/**
+ * @api {get} /api_delete_carrinho.php Excluir item do carrinho
+ * @apiName DeletarItemCarrinho
+ * @apiGroup Carrinho
+ *
+ * @apiQuery {Number} pizza_id ID da pizza a ser removida (obrigatório)
+ * @apiQuery {Number} cliente_id ID do cliente dono do carrinho (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica sucesso na exclusão
+ * @apiSuccess {String} message Mensagem informando sucesso ou motivo da falha
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro (ex: parâmetros ausentes, IDs inválidos, item não encontrado, erro na consulta)
+ */
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

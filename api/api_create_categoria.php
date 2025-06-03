@@ -1,4 +1,17 @@
 <?php
+/**
+ * @api {post} /api_create_categorias.php Criar nova categoria
+ * @apiName CriarCategoria
+ * @apiGroup Categoria
+ *
+ * @apiBody {String} categoria Nome da categoria (único)
+ *
+ * @apiSuccess {Boolean} success Sucesso da operação
+ * @apiSuccess {String} message Mensagem explicando o resultado
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Motivo do erro (ex: categoria já existe, campo obrigatório)
+ */
 header('Content-Type: application/json');
 require_once 'banco_connect.php';
 

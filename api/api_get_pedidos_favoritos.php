@@ -1,4 +1,22 @@
 <?php
+/**
+ * @api {get} /api_get_pedidos_favoritos.php Listar pizzas favoritas de um cliente
+ * @apiName GetFavoritos
+ * @apiGroup Favoritos
+ *
+ * @apiParam {Number} cliente_id ID do cliente para buscar os favoritos (obrigatório)
+ *
+ * @apiSuccess {Object[]} favoritos Lista de pizzas favoritas do cliente
+ * @apiSuccess {Number} favoritos.cliente_id ID do cliente
+ * @apiSuccess {Number} favoritos.pizza_id ID da pizza favorita
+ * @apiSuccess {String} favoritos.nome_pizza Nome da pizza favorita
+ * @apiSuccess {Number} favoritos.preco Preço da pizza favorita
+ *
+ * @apiError {Object[]} favoritos Array vazio caso não haja favoritos ou em caso de erro
+ *
+ * @apiMethod GET
+ */
+
 // Configuração do banco de dados
 $host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
 $dbname = 'wesley'; // Nome do banco de dados

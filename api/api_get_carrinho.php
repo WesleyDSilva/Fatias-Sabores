@@ -1,4 +1,25 @@
 <?php
+/**
+ * @api {get} /api_get_carrinho.php Listar itens do carrinho do cliente
+ * @apiName GetCarrinho
+ * @apiGroup Carrinho
+ *
+ * @apiParam {Number} cliente_id ID do cliente para buscar o carrinho (obrigatório)
+ *
+ * @apiSuccess {Object[]} itens_carrinho Lista de itens no carrinho do cliente
+ * @apiSuccess {Number} itens_carrinho.carrinho_id ID do item no carrinho
+ * @apiSuccess {Number} itens_carrinho.preco Preço do item
+ * @apiSuccess {String} itens_carrinho.nome_pizza Nome da pizza
+ * @apiSuccess {String} itens_carrinho.tipo_pizza Tipo da pizza
+ * @apiSuccess {Number} itens_carrinho.pizza_id ID da pizza
+ * @apiSuccess {String} itens_carrinho.caminho_imagem Caminho da imagem da pizza
+ *
+ * @apiError {Boolean} error true
+ * @apiError {String} message Mensagem de erro ou informação (ex: cliente_id inválido, nenhum item no carrinho)
+ *
+ * @apiMethod GET
+ */
+
 // Configurações para exibir todos os erros
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

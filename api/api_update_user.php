@@ -1,4 +1,56 @@
 <?php
+/**
+ * @api {post} /api_update_user.php Atualizar dados do usuário
+ * @apiName AtualizarUsuario
+ * @apiGroup Usuário
+ *
+ * @apiDescription Atualiza os dados cadastrais do usuário, incluindo opcionalmente a senha.
+ *
+ * @apiHeader {String} Content-Type application/json; charset=utf-8
+ *
+ * @apiParam {Number} id ID do usuário (obrigatório)
+ * @apiParam {String} nome Nome do usuário (obrigatório)
+ * @apiParam {String} logradouro Endereço do usuário (obrigatório)
+ * @apiParam {String} cidade Cidade do usuário (obrigatório)
+ * @apiParam {String} uf Estado/UF do usuário (obrigatório)
+ * @apiParam {String} cep CEP do usuário (obrigatório)
+ * @apiParam {String} complemento Complemento do endereço (obrigatório)
+ * @apiParam {String} numeroCasa Número da casa (obrigatório)
+ * @apiParam {String} email Email do usuário (obrigatório)
+ * @apiParam {String} telefone Telefone do usuário (obrigatório)
+ * @apiParam {String} [senha] Senha do usuário (opcional; se fornecida, será atualizada)
+ *
+ * @apiSuccess {Boolean} success Indica se a atualização foi realizada com sucesso
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Usuário atualizado com sucesso."
+ *  }
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro
+ *
+ * @apiErrorExample {json} Dados insuficientes
+ *  {
+ *    "success": false,
+ *    "message": "Dados insuficientes para atualizar o usuário."
+ *  }
+ *
+ * @apiErrorExample {json} Método inválido
+ *  {
+ *    "success": false,
+ *    "message": "Método de requisição inválido."
+ *  }
+ *
+ * @apiErrorExample {json} Erro no banco de dados
+ *  {
+ *    "success": false,
+ *    "message": "Erro ao atualizar o usuário: [mensagem do erro]"
+ *  }
+ */
+
 // Configurações do banco de dados
 $host = 'wesley.mysql.dbaas.com.br'; // Endereço do servidor do banco de dados
 $dbname = 'wesley'; // Nome do banco de dados

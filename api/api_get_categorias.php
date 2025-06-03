@@ -1,4 +1,21 @@
 <?php
+/**
+ * @api {get} /api_get_categorias.php Listar todas as categorias de pizzas
+ * @apiName GetCategorias
+ * @apiGroup Categorias
+ *
+ * @apiSuccess {Boolean} success Indica sucesso da operação
+ * @apiSuccess {Object[]} categorias Lista de categorias
+ * @apiSuccess {Number} categorias.categoria_id ID da categoria
+ * @apiSuccess {String} categorias.categoria Nome da categoria
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem informando o erro
+ * @apiError {String} error Detalhes técnicos do erro (quando disponível)
+ *
+ * @apiMethod GET
+ */
+
 header('Content-Type: application/json');
 require_once 'banco_connect.php';
 

@@ -1,4 +1,20 @@
 <?php
+/**
+ * @api {delete} /api_delete_pizzas.php Excluir pizza/produto pelo ID
+ * @apiName DeletePizza
+ * @apiGroup Produtos
+ *
+ * @apiParam {Number} produto_id ID do produto/pizza a ser excluído (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica sucesso da operação
+ * @apiSuccess {String} message Mensagem informando sucesso ou motivo da falha
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: ID inválido, erro no banco, produto não encontrado)
+ *
+ * @apiMethod DELETE
+ */
+
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados

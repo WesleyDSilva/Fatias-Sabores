@@ -1,4 +1,22 @@
 <?php
+/**
+ * @api {post} /api_create_pedidos.php Criar novo pedido
+ * @apiName CriarPedido
+ * @apiGroup Pedido
+ *
+ * @apiBody {Number} cliente_id ID do cliente que realiza o pedido
+ * @apiBody {Number} funcionario_id ID do funcionário responsável pelo pedido
+ * @apiBody {String} status Status inicial do pedido
+ *
+ * @apiSuccess {Boolean} success Indica sucesso na criação do pedido
+ * @apiSuccess {String} message Mensagem explicativa
+ * @apiSuccess {String} n_pedido Número único gerado do pedido
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Descrição do erro (ex: carrinho vazio, campos obrigatórios ausentes, erro na transação)
+ * @apiError {String} [error] Mensagem de erro do PDO (quando aplicável)
+ */
+
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados

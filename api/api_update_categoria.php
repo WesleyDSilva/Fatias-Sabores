@@ -1,4 +1,71 @@
 <?php
+/**
+ * @api {put} /api_update_categoria.php Atualizar categoria
+ * @apiName AtualizarCategoria
+ * @apiGroup Categoria
+ *
+ * @apiDescription Atualiza o nome de uma categoria pelo seu ID.
+ *
+ * @apiHeader {String} Content-Type application/json
+ *
+ * @apiParam {Number} categoria_id ID da categoria a ser atualizada (obrigatório)
+ * @apiParam {String} nova_categoria Novo nome da categoria (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica se a atualização foi bem-sucedida
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Categoria atualizada com sucesso."
+ *  }
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro
+ *
+ * @apiErrorExample {json} Dados inválidos
+ *  {
+ *    "success": false,
+ *    "message": "Dados inválidos."
+ *  }
+ */
+
+/**
+ * @api {delete} /api_update_categoria.php Excluir categoria
+ * @apiName ExcluirCategoria
+ * @apiGroup Categoria
+ *
+ * @apiDescription Exclui uma categoria pelo seu ID, desde que não haja produtos vinculados.
+ *
+ * @apiHeader {String} Content-Type application/json
+ *
+ * @apiParam {Number} categoria_id ID da categoria a ser excluída (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica se a exclusão foi bem-sucedida
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Categoria excluída com sucesso."
+ *  }
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro
+ *
+ * @apiErrorExample {json} Categoria vinculada a produtos
+ *  {
+ *    "success": false,
+ *    "message": "Categoria possui produtos vinculados e não pode ser excluída."
+ *  }
+ *
+ * @apiErrorExample {json} ID inválido
+ *  {
+ *    "success": false,
+ *    "message": "ID inválido."
+ *  }
+ */
+
 header('Content-Type: application/json');
 require_once 'banco_connect.php';
 

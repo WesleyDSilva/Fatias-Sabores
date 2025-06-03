@@ -1,4 +1,30 @@
 <?php
+/**
+ * @api {get} /api_get_pedidos.php Listar pedidos de um cliente
+ * @apiName GetPedidos
+ * @apiGroup Pedidos
+ *
+ * @apiParam {Number} cliente_id ID do cliente para buscar os pedidos (obrigatório)
+ *
+ * @apiSuccess {Object[]} pedidos Lista de pedidos do cliente
+ * @apiSuccess {Number} pedidos.pedido_id ID do pedido
+ * @apiSuccess {Number} pedidos.n_pedido Número do pedido
+ * @apiSuccess {Number} pedidos.cliente_id ID do cliente
+ * @apiSuccess {String} pedidos.data_pedido Data do pedido
+ * @apiSuccess {Number} pedidos.total Valor total do pedido
+ * @apiSuccess {Number} pedidos.funcionario_id ID do funcionário responsável
+ * @apiSuccess {String} pedidos.status Status do pedido
+ * @apiSuccess {Number} pedidos.produto_id ID do produto
+ * @apiSuccess {Number} pedidos.quantidade Quantidade do produto no pedido
+ * @apiSuccess {String} pedidos.obs Observações do pedido
+ *
+ * @apiError {Boolean} error true
+ * @apiError {String} message Mensagem de erro (ex: ID inválido, erro de conexão, método incorreto)
+ *
+ * @apiMethod GET
+ */
+
+
 header('Content-Type: application/json');
 
 // Importando credenciais do banco

@@ -1,4 +1,21 @@
 <?php
+/**
+ * @api {post} /api_create_colaboradores.php Criar colaborador
+ * @apiName CriarColaborador
+ * @apiGroup Colaboradores
+ *
+ * @apiBody {String} nome Nome do colaborador
+ * @apiBody {String} cargo Cargo do colaborador
+ * @apiBody {String} telefone Telefone
+ * @apiBody {String} perfil admin|usuario
+ * @apiBody {String} email E-mail de login
+ * @apiBody {String} senha Senha
+ * @apiBody {String} [placa] Placa do veículo (opcional)
+ * @apiBody {Number} [nivel_admin] Nível de admin (opcional)
+ *
+ * @apiSuccess {Boolean} success Sucesso da operação
+ * @apiSuccess {String} message Mensagem
+ */
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados

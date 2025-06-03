@@ -1,4 +1,57 @@
 <?php
+/**
+ * @api {get} /api_update_status_pedido.php Atualizar status do pedido
+ * @apiName AtualizarStatusPedido
+ * @apiGroup Pedido
+ *
+ * @apiDescription Atualiza o status de um pedido específico. Somente usuários com tipo 'admin' ou 'operacao' têm permissão.
+ *
+ * @apiParam {Number} pedido_id ID do pedido a ser atualizado (obrigatório, via GET)
+ * @apiParam {String="PENDENTE","PREPARAÇÃO","ENTREGUE","CANCELADO"} status Novo status do pedido (obrigatório, via GET)
+ *
+ * @apiSuccess {Boolean} success Indica se a atualização foi bem-sucedida
+ * @apiSuccess {String} message Mensagem explicativa
+ *
+ * @apiSuccessExample {json} Sucesso
+ *  {
+ *    "success": true,
+ *    "message": "Status atualizado com sucesso."
+ *  }
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro
+ *
+ * @apiErrorExample {json} Acesso negado
+ *  {
+ *    "success": false,
+ *    "message": "Acesso negado."
+ *  }
+ *
+ * @apiErrorExample {json} Parâmetros ausentes
+ *  {
+ *    "success": false,
+ *    "message": "Parâmetros ausentes."
+ *  }
+ *
+ * @apiErrorExample {json} Status inválido
+ *  {
+ *    "success": false,
+ *    "message": "Status inválido."
+ *  }
+ *
+ * @apiErrorExample {json} Nenhuma linha atualizada
+ *  {
+ *    "success": false,
+ *    "message": "Nenhuma linha atualizada."
+ *  }
+ *
+ * @apiErrorExample {json} Erro no banco de dados
+ *  {
+ *    "success": false,
+ *    "message": "Erro no banco de dados: [mensagem do erro]"
+ *  }
+ */
+
 require_once 'banco_connect.php';
 require_once '../Versão ADM/verifica_sessao.php';
 

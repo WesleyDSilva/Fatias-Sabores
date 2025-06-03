@@ -1,4 +1,18 @@
 <?php
+/**
+ * @api {delete} /api_delete_colaboradores.php Excluir funcionário
+ * @apiName DeletarFuncionario
+ * @apiGroup Funcionarios
+ *
+ * @apiBody {Number} funcionario_id ID do funcionário a ser excluído (obrigatório)
+ *
+ * @apiSuccess {Boolean} success Indica sucesso na exclusão
+ * @apiSuccess {String} message Mensagem informando sucesso ou motivo da falha
+ *
+ * @apiError {Boolean} success false
+ * @apiError {String} message Mensagem explicando o erro (ex: ID inválido, funcionário não encontrado, erro no banco)
+ */
+
 header('Content-Type: application/json');
 
 // Importando conexão com o Banco de Dados
