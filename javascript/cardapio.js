@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           : "img/padrao.jpg";
       const card = document.createElement("div");
       card.className = "col-md-4 mb-4";
-
       const sizeOptions = getSizeOptions(produto);
 
       let selectHTML = "";
@@ -147,6 +146,26 @@ document.addEventListener("DOMContentLoaded", async () => {
           tipoApi: "inteira",
         });
       }
+      if (produto.media_inteira) {
+        options.push({
+          displayText: `Média Inteira - R$ ${parseFloat(
+            produto.media_inteira
+          ).toFixed(2)}`,
+          price: produto.media_inteira,
+          tamanhoApi: "media_inteira",
+          tipoApi: "inteira",
+        });
+      }
+      if (produto.grande_inteira) {
+        options.push({
+          displayText: `Grande Inteira - R$ ${parseFloat(
+            produto.grande_inteira
+          ).toFixed(2)}`,
+          price: produto.grande_inteira,
+          tamanhoApi: "grande_inteira",
+          tipoApi: "inteira",
+        });
+      }
       return options;
     }
 
@@ -185,42 +204,51 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
 
           const qtdInput = document.getElementById(`qtd-${id_produto_str}`);
-          const quantidade = parseInt(qtdInput.value) || 1;
+          const quantidade = parseInt(qtdInput.value) || 1; // Obter quantidade
 
           const sizeSelect = document.getElementById(
             `size-select-${id_produto_str}`
           );
           let selectedOptionData = JSON.parse(sizeSelect.value);
+          let todosAdicionadosComSucesso = true; // Para rastrear sucesso da adição
 
-          const payload = {
-            cliente_id,
-            produto_id: parseInt(id_produto_str),
-            preco: parseFloat(selectedOptionData.price),
-            tamanho_selecionado: selectedOptionData.tamanhoApi,
-            tipo_tamanho: selectedOptionData.tipoApi,
-            quantidade, // Adiciona a quantidade
-          };
+          // Loop para enviar múltiplas requisições conforme a quantidade
+          for (let i = 0; i < quantidade; i++) {
+            const payload = {
+              cliente_id,
+              produto_id: parseInt(id_produto_str),
+              preco: parseFloat(selectedOptionData.price),
+              tamanho_selecionado: selectedOptionData.tamanhoApi,
+              tipo_tamanho: selectedOptionData.tipoApi,
+              quantidade: 1, // Enviar sempre 1 por vez
+            };
 
-          try {
-            const respostaPost = await fetch(urlPost, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const resultadoPost = await respostaPost.json();
-            if (respostaPost.ok && resultadoPost.success) {
-              alert(
-                `${quantidade}x "${nome_produto}" adicionado(s) com sucesso ao pedido!`
-              );
-              qtdInput.value = 1; // Resetar quantidade
-              updateCartCount(); // Atualiza o contador do carrinho
-            } else {
-              alert(`Erro ao adicionar item: ${resultadoPost.message}`);
+            try {
+              const respostaPost = await fetch(urlPost, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              const resultadoPost = await respostaPost.json();
+              if (!respostaPost.ok || !resultadoPost.success) {
+                todosAdicionadosComSucesso = false; // Se algum falhar, marca como falho
+              }
+            } catch (erro) {
+              console.error("Erro de comunicação ao adicionar item:", erro);
+              todosAdicionadosComSucesso = false; // Se houver erro de comunicação
             }
-          } catch (erro) {
-            console.error("Erro de comunicação ao adicionar item:", erro);
-            alert("Erro de comunicação. Tente mais tarde.");
           }
+
+          // Exibe a mensagem de confirmação após todas as adições
+          if (todosAdicionadosComSucesso) {
+            alert(`"${nome_produto}" adicionado(s) com sucesso ao pedido!`);
+          } else {
+            alert(`Houve um erro ao adicionar "${nome_produto}".`);
+          }
+
+          // Resetar a quantidade após adicionar ao carrinho
+          qtdInput.value = 1;
+          updateCartCount(); // Atualiza o contador do carrinho
         });
       });
     }
