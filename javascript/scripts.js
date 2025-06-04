@@ -48,7 +48,7 @@ function atualizarMenuUsuario() {
     if (menuCadastro) {
       // menuCadastro vira link para Histórico de Pedidos
       menuCadastro.innerHTML = `
-        <a class="nav-link" href="histpedido.php">Histórico</a>`;
+        <a class="nav-link" href="historico_pedidos.php">Histórico</a>`;
     }
     if (menuADM) {
       // menuADM (que era para admin) agora é usado para o botão de Sair
