@@ -58,21 +58,12 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                     <li class="nav-item"><a class="nav-link" href="cardapio.php">Cardápio</a></li>
 
                     <?php if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])): ?>
-                        <!-- Usuário Logado -->
-                        <li class="nav-item">
-                            <span class="nav-link">Olá, <?php echo htmlspecialchars($_SESSION['user_nome']); ?>!</span>
-                        </li>
+
+
                         <li class="nav-item" id="menu-fav">
                             <!-- Link para Favoritos, se houver -->
                         </li>
-                        <li class="nav-item">
-                            <a href="logout.php" class="btn me-2"
-                                style="border-radius: 30px; color: #FFF; background-color: #dc3545;">
-                                SAIR
-                            </a>
-                        </li>
-                    <?php else: ?>
-                        <!-- Usuário Deslogado -->
+
                         <li class="nav-item" id="menu-cadastro">
                             <a class="nav-link" href="cadastro.html">Cadastre-se</a>
                         </li>
@@ -153,7 +144,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                                         style="max-width: 200px; border-radius: 30px; border-style: solid; border-color: #000000;">
                                 </div>
                                 <div class="text-center mt-4">
-                                    <a href="pedidoconfirmado.php" class="btn" id="btn-confirmar-pedido-link"
+                                    <a href="historico_pedidos.php" class="btn" id="btn-confirmar-pedido-link"
                                         style="border-radius: 30px; color: #fff; background-color: #FFA831;">
                                         <b>Confirmar meu pedido</b>
                                     </a>
