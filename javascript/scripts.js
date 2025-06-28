@@ -1,6 +1,32 @@
 // scripts.js
 
-// Função flip do card para mobile (If you have flip cards on other pages)
+console.log("Global Scripts.js: Carregado.");
+
+// Variável global para a base da URL das APIs (ajuste se suas APIs não estiverem na raiz)
+const API_DOMAIN = "https://devweb3.ok.etc.br"; // Ou deixe vazio se for same-origin e quiser caminhos relativos à raiz
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Scripts.js: DOMContentLoaded disparado.");
+
+  // Atualização do menu (chamada sempre que o DOM carrega)
+  atualizarMenuUsuario();
+  console.log("Scripts.js: atualizarMenuUsuario chamado no DOMContentLoaded.");
+
+  // Lógica do formulário de cadastro (só executa se o formulário existir na página)
+  const cadastroForm = document.getElementById("cadastroForm");
+  if (cadastroForm) {
+    console.log(
+      "Scripts.js: Formulário de cadastro encontrado, inicializando lógica."
+    );
+    inicializarFormularioCadastro(cadastroForm);
+  } else {
+    // console.log("Scripts.js: Formulário de cadastro ('cadastroForm') não encontrado nesta página.");
+  }
+
+  // Adicione aqui outras inicializações globais que dependem do DOM
+});
+
+// Função flip do card para mobile (mantida como no seu original)
 document.querySelectorAll(".flip-card").forEach((card) => {
   let isFlipped = false;
   card.addEventListener("click", () => {
@@ -16,184 +42,186 @@ document.querySelectorAll(".flip-card").forEach((card) => {
   });
 });
 
-// Função para atualizar o menu baseado no status de login
+/**
+ * Atualiza a navegação do menu com base no status de login do usuário.
+ * Lê dados do usuário do localStorage.
+ */
 function atualizarMenuUsuario() {
+  console.log("Scripts.js: atualizarMenuUsuario() executada.");
   const usuarioJSON = localStorage.getItem("usuario");
   let usuario = null;
   if (usuarioJSON) {
     try {
       usuario = JSON.parse(usuarioJSON);
     } catch (e) {
-      console.error("Erro ao parsear 'usuario' do localStorage:", e);
+      console.error(
+        "Scripts.js: Erro ao parsear 'usuario' do localStorage:",
+        e
+      );
       localStorage.removeItem("usuario"); // Remove item inválido
     }
   }
 
-  const menuLogin = document.getElementById("menu-login");
-  const menuCadastro = document.getElementById("menu-cadastro");
-  const menuADM = document.getElementById("menu-adm"); // Este elemento é usado para o botão de Sair
-  const menuFAV = document.getElementById("menu-fav");
+  const menuLoginLi = document.getElementById("menu-login");
+  const menuCadastroLi = document.getElementById("menu-cadastro");
+  const menuPerfilLi = document.getElementById("menu-perfil"); // Para "Olá, Nome!" e SAIR
+  const menuFavLi = document.getElementById("menu-fav");
+  // const menuAdmLi = document.getElementById("menu-adm"); // Se tiver um menu de admin separado
 
-  if (usuario && usuario.id) {
-    // Verifica se o usuário e o ID existem
-    if (menuLogin) {
-      // O elemento menuLogin será substituído pelo nome do usuário e link para perfil
-      menuLogin.innerHTML = `
+  if (usuario && usuario.id && usuario.nome) {
+    // Usuário logado
+    console.log("Scripts.js: Usuário logado encontrado:", usuario.nome);
+    if (menuLoginLi) menuLoginLi.style.display = "none"; // Oculta o botão de LOGIN
+
+    if (menuPerfilLi) {
+      menuPerfilLi.style.display = "list-item"; // Mostra o container do perfil/logout
+      menuPerfilLi.innerHTML = `
         <a href="perfil.php" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center;">
-          <img src="/img/usuario.png" alt="Usuário" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;"> ${
-            usuario.nome ? usuario.nome.split(" ")[0] : "Usuário" // Mostra o primeiro nome
-          }
-        </a>`;
+          <img src="/img/usuario.png" alt="Usuário" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;"> 
+          ${usuario.nome.split(" ")[0]}
+        </a>
+        <button onclick="deslogarUsuario()" class="btn btn-danger ms-2" style="border-radius: 30px; padding: 5px 10px;">
+          <img src="/img/logout.png" alt="Sair" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 3px;">Sair
+        </button>
+      `;
+    } else if (menuLoginLi) {
+      // Fallback: se menu-perfil não existir, modifica menu-login
+      menuLoginLi.style.display = "list-item";
+      menuLoginLi.innerHTML = `
+            <a href="perfil.php" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color: #FFA831; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center;">
+              <img src="/img/usuario.png" alt="Usuário" style="width: 24px; height: 24px; margin-right: 5px;"> ${
+                usuario.nome.split(" ")[0]
+              }
+            </a>`;
+      // Adiciona botão de logout em menu-adm como antes, se menu-perfil não existir
+      const menuAdmLiFallback = document.getElementById("menu-adm");
+      if (menuAdmLiFallback) {
+        menuAdmLiFallback.style.display = "list-item";
+        menuAdmLiFallback.innerHTML = `<button onclick="deslogarUsuario()" class="btn btn-danger ms-2" style="border-radius: 30px; padding: 5px 10px;">Sair</button>`;
+      }
     }
-    if (menuCadastro) {
-      // menuCadastro vira link para Histórico de Pedidos
-      menuCadastro.innerHTML = `
-        <a class="nav-link" href="historico_pedidos.php">Histórico</a>`;
+
+    if (menuCadastroLi) {
+      menuCadastroLi.innerHTML = `<a class="nav-link" href="historico_pedidos.php">Meus Pedidos</a>`;
     }
-    if (menuADM) {
-      // menuADM (que era para admin) agora é usado para o botão de Sair
-      menuADM.innerHTML = `
-        <button onclick="deslogarUsuario()" id="btn-logoff" class="btn me-2" style="border-radius: 30px; color: #FFFF; background-color:rgb(252, 44, 29); padding: 5px 10px; border: none; cursor: pointer; display: inline-flex; align-items: center;">
-          <img src="/img/logout.png" alt="Sair" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">Sair
-        </button>`;
-    }
-    if (menuFAV) {
-      menuFAV.style.display = "list-item"; // Ou 'block' dependendo do seu CSS
-      menuFAV.innerHTML = `
-        <a class="nav-link" href="favoritos.php">Favoritos</a>`;
+    if (menuFavLi) {
+      menuFavLi.style.display = "list-item";
+      menuFavLi.innerHTML = `<a class="nav-link" href="favoritos.php">Favoritos</a>`;
     }
   } else {
     // Usuário não logado
-    if (menuLogin) {
-      menuLogin.innerHTML = `
+    console.log("Scripts.js: Nenhum usuário logado.");
+    if (menuLoginLi) {
+      menuLoginLi.style.display = "list-item";
+      menuLoginLi.innerHTML = `
         <a href="login.html" class="btn me-2" style="border-radius: 30px; color: #FFF; background-color: #FFA831;">
           <img src="/img/perfil.png" style="width: 24px; height: 24px;"> LOGIN
         </a>`;
     }
-    if (menuCadastro) {
-      menuCadastro.innerHTML =
-        '<a class="nav-link" href="cadastro.html">Cadastre-se</a>'; // Alterado para cadastro.html
+    if (menuCadastroLi) {
+      menuCadastroLi.innerHTML =
+        '<a class="nav-link" href="cadastro.html">Cadastre-se</a>';
     }
-    if (menuADM) {
-      menuADM.innerHTML = ""; // Limpa o botão de sair
-    }
-    if (menuFAV) {
-      menuFAV.style.display = "none";
-      menuFAV.innerHTML = "";
+    if (menuPerfilLi) menuPerfilLi.style.display = "none"; // Oculta container de perfil/logout
+    if (menuFavLi) menuFavLi.style.display = "none";
+
+    // Limpa o menu-adm se ele foi usado para o botão de sair
+    const menuAdmLiFallback = document.getElementById("menu-adm");
+    if (
+      menuAdmLiFallback &&
+      menuAdmLiFallback.querySelector('button[onclick="deslogarUsuario()"]')
+    ) {
+      menuAdmLiFallback.innerHTML = "";
+      menuAdmLiFallback.style.display = "none";
     }
   }
 }
 
-// Chamar atualizarMenuUsuario quando o DOM estiver carregado
-document.addEventListener("DOMContentLoaded", function () {
-  atualizarMenuUsuario();
-});
-
-// ****** FUNÇÃO DESLOGAR ATUALIZADA ******
+/**
+ * Desloga o usuário, limpando a sessão no servidor e localmente, e redirecionando.
+ */
 async function deslogarUsuario() {
+  console.log("Scripts.js: deslogarUsuario() chamado.");
   try {
-    // 1. Chamar o script logout.php no servidor para destruir a sessão PHP
-    // Certifique-se que o caminho para 'logout.php' está correto
-    // Se scripts.js está em /javascript/ e logout.php na raiz, o caminho seria '../logout.php'
-    // Se ambos estão na raiz, 'logout.php' está ok.
-    // Assumindo que logout.php está na raiz do site, acessível por '/logout.php'
-    const response = await fetch("logout.php", {
-      // Ajuste o caminho se necessário
-      method: "GET", // Ou POST, mas GET é comum para logout simples se não houver CSRF token
-      // Não é necessário enviar corpo ou headers especiais para este logout.php
+    const response = await fetch(`${API_DOMAIN}/logout.php`, {
+      // Usa API_DOMAIN se definido, ou caminho relativo/absoluto
+      method: "GET", // logout.php é GET
     });
-
-    // O logout.php redireciona, então não esperamos um JSON de sucesso aqui necessariamente.
-    // O importante é que a requisição seja feita.
-    // Podemos verificar se a requisição foi bem-sucedida (status 200),
-    // mas o redirecionamento de logout.php vai acontecer de qualquer forma.
-
     if (response.ok || response.redirected) {
-      console.log("Sessão PHP provavelmente encerrada. Limpando dados locais.");
+      console.log(
+        "Scripts.js: Chamada para logout.php bem-sucedida ou redirecionada."
+      );
     } else {
       console.warn(
-        "Chamada para logout.php pode ter falhado. Status:",
+        "Scripts.js: Chamada para logout.php pode ter falhado. Status:",
         response.status
       );
-      // Mesmo se falhar, prosseguimos com a limpeza local e redirecionamento
-      // para garantir que o usuário veja a interface de deslogado.
     }
   } catch (error) {
-    console.error("Erro ao tentar chamar logout.php:", error);
-    // Mesmo em caso de erro de rede, prosseguir com a limpeza local
+    console.error(
+      "Scripts.js: Erro de rede ao tentar chamar logout.php:",
+      error
+    );
   } finally {
-    // 2. Limpar o localStorage
     localStorage.removeItem("usuario");
-
-    // 3. Atualizar a interface do menu imediatamente
-    atualizarMenuUsuario();
-
-    // 4. Redirecionar o usuário para a página inicial ou de login
-    // O próprio logout.php já faz um redirecionamento para login.html.
-    // Se você quiser controlar o redirecionamento exclusivamente pelo JS após
-    // confirmar que a sessão PHP foi destruída, o logout.php não deveria redirecionar,
-    // mas sim retornar um JSON de sucesso.
-    // Dado que o logout.php ATUAL redireciona, este redirecionamento do JS pode ser redundante
-    // ou pode levar a um "duplo redirecionamento".
-    // Para este exemplo, vamos manter o redirecionamento do JS caso o do PHP falhe por algum motivo de rede.
-    // Ou, se o logout.php for modificado para não redirecionar:
-    window.location.href = "login.html"; // Ou 'index.html' se preferir
+    console.log("Scripts.js: 'usuario' removido do localStorage.");
+    atualizarMenuUsuario(); // Atualiza a interface do menu
+    // O logout.php já deve redirecionar para login.html.
+    // Se precisar forçar, descomente a linha abaixo, mas pode causar duplo redirect.
+    window.location.href = "login.html";
+    console.log("Scripts.js: Redirecionando para login.html.");
   }
 }
 
-function toggleSenha(campoId) {
+/**
+ * Alterna a visibilidade de um campo de senha e o ícone do olho.
+ * @param {string} campoId O ID do input de senha.
+ * @param {string} [iconeId] O ID opcional do elemento do ícone (se não for um <i> ou <span> genérico).
+ */
+function toggleSenha(campoId, iconeId) {
   const input = document.getElementById(campoId);
   if (!input) {
-    console.warn(`Input field with ID "${campoId}" not found for toggleSenha.`);
+    console.warn(
+      `Scripts.js: Input field with ID "${campoId}" not found for toggleSenha.`
+    );
     return;
   }
-  // Ajuste no seletor do botão e ícone se necessário, baseado no HTML de login.html
-  const buttonContainer = input.closest(".position-relative");
-  const icon = buttonContainer ? buttonContainer.querySelector("i.bi") : null; // Supondo que o ícone seja <i>
+  const iconElement = iconeId
+    ? document.getElementById(iconeId)
+    : input.closest(".position-relative")?.querySelector("i.bi, span.bi");
 
-  if (icon) {
+  if (iconElement) {
     if (input.type === "password") {
       input.type = "text";
-      icon.classList.remove("bi-eye-fill"); // Ajuste conforme o ícone usado
-      icon.classList.add("bi-eye-slash-fill"); // Ajuste conforme o ícone usado
+      iconElement.classList.remove("bi-eye-fill", "bi-eye");
+      iconElement.classList.add("bi-eye-slash-fill");
     } else {
       input.type = "password";
-      icon.classList.remove("bi-eye-slash-fill"); // Ajuste
-      icon.classList.add("bi-eye-fill"); // Ajuste
+      iconElement.classList.remove("bi-eye-slash-fill", "bi-eye-slash");
+      iconElement.classList.add("bi-eye-fill");
     }
   } else {
-    // Fallback se o ícone específico não for encontrado, tenta uma abordagem mais genérica
-    // ou apenas alterna o tipo sem feedback visual do ícone se ele não estiver lá.
-    if (input.type === "password") {
-      input.type = "text";
-    } else {
-      input.type = "password";
-    }
+    input.type = input.type === "password" ? "text" : "password";
     console.warn(
-      `Ícone para o campo de senha "${campoId}" não encontrado ou não é um <i> com classes bi.`
+      `Scripts.js: Ícone para campo de senha "${campoId}" (ou com ID "${iconeId}") não encontrado.`
     );
   }
 }
 
-// Lógica do formulário de CADASTRO
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("cadastroForm");
-  if (!form) {
-    return; // Sai se não estiver na página de cadastro
-  }
-
+/**
+ * Inicializa a lógica do formulário de cadastro.
+ * @param {HTMLFormElement} formElement O elemento do formulário.
+ */
+function inicializarFormularioCadastro(formElement) {
   const cepInput = document.getElementById("cep");
   const logradouroInput = document.getElementById("logradouro");
   const cidadeInput = document.getElementById("cidade");
-  const ufInput = document.getElementById("UF");
+  const ufInput = document.getElementById("UF"); // ID no HTML é "UF"
   const senhaInput = document.getElementById("senha");
-  const confirmarSenhaInput = document.getElementById("confirmaSenha");
-  const nomeInput = document.getElementById("nome");
-  const emailInput = document.getElementById("email");
-  const numeroCasaInput = document.getElementById("numero_casa");
-  const cpfInput = document.getElementById("cpf");
-  const telefoneInput = document.getElementById("telefone");
-  const complementoInput = document.getElementById("complemento");
+  const confirmarSenhaInput = document.getElementById("confirmaSenha"); // ID no HTML é "confirmaSenha"
+  // Adicione IDs para os ícones de olho no HTML do cadastro se quiser usar toggleSenha com o segundo parâmetro
+  // Ex: <span id="iconeSenhaCadastro" class="bi bi-eye-fill"></span>
+  // E chame: onclick="toggleSenha('senha', 'iconeSenhaCadastro')"
 
   function clearAddressFields() {
     if (logradouroInput) logradouroInput.value = "";
@@ -206,11 +234,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const cepValue = cepInput.value.replace(/\D/g, "");
       if (cepValue.length === 8) {
         cepInput.disabled = true;
+        logradouroInput.value = "Buscando..."; // Feedback
+        cidadeInput.value = "Buscando...";
+        ufInput.value = "Buscando...";
         fetch(`https://viacep.com.br/ws/${cepValue}/json/`)
           .then((response) => {
-            if (!response.ok) {
+            if (!response.ok)
               throw new Error(`HTTP error! status: ${response.status}`);
-            }
             return response.json();
           })
           .then((data) => {
@@ -224,110 +254,114 @@ document.addEventListener("DOMContentLoaded", function () {
                 logradouroInput.value = data.logradouro || "";
               if (cidadeInput) cidadeInput.value = data.localidade || "";
               if (ufInput) ufInput.value = data.uf || "";
-              if (numeroCasaInput) numeroCasaInput.focus();
+              document.getElementById("numero_casa")?.focus();
             }
           })
           .catch((error) => {
             cepInput.disabled = false;
-            console.error("Erro ao buscar CEP:", error);
-            alert(
-              "Não foi possível consultar o CEP. Verifique sua conexão ou tente novamente mais tarde."
-            );
             clearAddressFields();
+            console.error("Scripts.js: Erro ao buscar CEP:", error);
+            alert(
+              "Não foi possível consultar o CEP. Tente novamente mais tarde."
+            );
           });
-      } else if (cepValue.length > 0 && cepValue.length < 8) {
-        alert("CEP inválido. Deve conter 8 dígitos numéricos.");
+      } else if (cepValue.length > 0) {
+        // Se não for 8 e não for vazio, é inválido
+        alert("CEP inválido. Deve conter 8 dígitos.");
         clearAddressFields();
-      } else if (cepValue.length === 0) {
+      } else {
+        // Se for vazio
         clearAddressFields();
       }
     });
   }
 
-  form.addEventListener("submit", async function (event) {
+  formElement.addEventListener("submit", async function (event) {
     event.preventDefault();
+    console.log("Scripts.js: Formulário de cadastro submetido.");
+
+    if (!senhaInput || !confirmarSenhaInput) {
+      alert("Erro: Campos de senha não encontrados no formulário.");
+      return;
+    }
 
     if (senhaInput.value.length < 6) {
       alert("A senha deve ter pelo menos 6 caracteres.");
       senhaInput.focus();
       return;
     }
-
     if (senhaInput.value !== confirmarSenhaInput.value) {
       alert("As senhas não coincidem!");
       confirmarSenhaInput.value = "";
       confirmarSenhaInput.focus();
       return;
     }
-
     const termosCheckbox = document.getElementById("termos");
     if (termosCheckbox && !termosCheckbox.checked) {
-      alert("Você precisa aceitar os Termos e Condições para se cadastrar.");
+      alert("Você precisa aceitar os Termos e Condições.");
       termosCheckbox.focus();
       return;
     }
 
     const formDataObject = {
-      nome: nomeInput.value,
-      logradouro: logradouroInput.value,
-      cidade: cidadeInput.value,
-      UF: ufInput.value,
-      cep: cepInput.value.replace(/\D/g, ""),
-      numero_casa: numeroCasaInput.value,
-      complemento: complementoInput.value,
-      email: emailInput.value,
-      telefone: telefoneInput.value,
+      nome: document.getElementById("nome")?.value,
+      logradouro: logradouroInput?.value,
+      cidade: cidadeInput?.value,
+      UF: ufInput?.value,
+      cep: cepInput?.value.replace(/\D/g, ""),
+      numero_casa: document.getElementById("numero_casa")?.value, // API PHP espera numero_casa
+      complemento: document.getElementById("complemento")?.value,
+      email: document.getElementById("email")?.value,
+      telefone: document.getElementById("telefone")?.value,
       senha: senhaInput.value,
-      cpf: cpfInput.value,
+      cpf: document.getElementById("cpf")?.value,
     };
+    console.log("Scripts.js: Payload para API de cadastro:", formDataObject);
 
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) submitButton.disabled = true;
+    const submitButton = formElement.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Enviando...";
+    }
 
     try {
-      // Certifique-se que o caminho para sua API de cadastro está correto
-      const response = await fetch("api/api_create_hash.php", {
+      const response = await fetch(`${API_DOMAIN}/api/api_create_hash.php`, {
+        // Ajuste o caminho se /api/ não estiver no API_DOMAIN
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataObject),
       });
-
       const result = await response.json();
+      console.log("Scripts.js: Resposta da API de cadastro:", result);
 
       if (result.success) {
-        alert(result.message || "Cadastro realizado com sucesso!");
-
-        // Após cadastro bem-sucedido, o usuário normalmente NÃO é logado automaticamente
-        // Ele deve ir para a página de login.
-        // Apenas limpamos o formulário e talvez redirecionamos para o login.
-        // Não setamos 'usuario' no localStorage aqui, pois não temos o ID do usuário ainda.
-
-        form.reset();
+        alert(
+          result.message ||
+            "Cadastro realizado com sucesso! Você será redirecionado para o login."
+        );
+        formElement.reset();
         clearAddressFields();
-
-        if (senhaInput) {
-          senhaInput.type = "password";
-          // Lógica para resetar ícone de senha (se necessário)
-        }
-        if (confirmarSenhaInput) {
-          confirmarSenhaInput.type = "password";
-          // Lógica para resetar ícone de confirmação de senha (se necessário)
-        }
-        // Redirecionar para a página de login após cadastro
+        // Reseta os ícones de senha se implementado com IDs
+        // toggleSenha('senha', 'iconeSenhaCadastro'); // Chamaria para resetar o ícone para olho normal
+        // toggleSenha('confirmaSenha', 'iconeConfirmaSenhaCadastro');
         window.location.href = "login.html";
       } else {
         alert(
           "Erro no cadastro: " +
-            (result.message || result.error || "Ocorreu um erro desconhecido.")
+            (result.message || result.error || "Ocorreu um erro.")
         );
       }
     } catch (error) {
-      console.error("Erro ao enviar formulário:", error);
-      alert("Erro ao conectar com o servidor. Tente novamente mais tarde.");
+      console.error(
+        "Scripts.js: Erro ao enviar formulário de cadastro:",
+        error
+      );
+      alert("Erro ao conectar com o servidor para cadastro. Tente novamente.");
     } finally {
-      if (submitButton) submitButton.disabled = false;
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "CADASTRAR";
+      }
     }
   });
-});
+} // Fim de inicializarFormularioCadastro
