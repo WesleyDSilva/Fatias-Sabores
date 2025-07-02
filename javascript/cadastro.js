@@ -42,7 +42,7 @@ async function autenticar() {
   if (data.success) {
     // Redireciona para a página inicial
     localStorage.setItem("usuario", JSON.stringify(data.user)); // Salva o usuário no Storage local
-    window.location.href = "index.html";
+    window.location.href = "index.php";
   } else {
     mensagem.innerText = data.message;
     mensagem.style.color = "red";
