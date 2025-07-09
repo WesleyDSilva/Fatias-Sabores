@@ -66,7 +66,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="carrinho.html" class="btn me-2"
+                        <a href="carrinho.php" class="btn me-2"
                             style="border-radius: 30px; color: #FFF; background-color: #FFA831; width: auto;">
                             <img src="/img/carrinho.png" style="width: 24px; height: 24px;"> CARRINHO
                         </a>
